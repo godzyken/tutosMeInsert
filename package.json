@@ -1,0 +1,28 @@
+{
+  "name": "tutosmeinsert",
+  "version": "1.0.0",
+  "description": "server connecter a la base de donnee tutosME",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godzyken/tutosMeTest.git"
+  },
+  "keywords": [
+    "D4t.ebayo"
+  ],
+  "author": "godzyken",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/godzyken/tutosMeTest/issues"
+  },
+  "homepage": "https://github.com/godzyken/tutosMeTest#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-list-endpoints": "^4.0.0",
+    "line-reader": "^0.4.0",
+    "mysql": "^2.16.0"
+  }
+}
