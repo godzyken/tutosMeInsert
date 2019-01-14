@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 router.use(bodyParser.json());
-var Gold = require('./gold');
+var GoldSQL = require('./GoldToSql');
 
 router.get('/', function (req, res) {
-    Gold.getGold(function (err, rows) {
+    GoldSQL(function (err, rows) {
         if(err) {
             res.status(400).json(err);
         }
@@ -17,7 +17,7 @@ router.get('/', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-    Gold.createGold(req.body, function (err, count) {
+    GoldSQL(req.body, function (err, count) {
         if(err) {
             res.status(400).json(err);
         }
