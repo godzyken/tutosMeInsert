@@ -6,4 +6,4 @@ var connection = mysql.createPool({
     password: 'HNmB1g1KWEODsI2u',
     database: 'tutosme.dev'
 });
-module.exports=connection;
+module.exports = connection;

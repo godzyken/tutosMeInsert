@@ -1,16 +1,16 @@
 var db = require('../db');
 var XLSX = require('xlsx');
-var wb = new XLSX.readFile('./bronze/BDD Bronze insert.xlsx', {sheetStubs: true});
+var wb = new XLSX.readFile('./gold/BBD Gold insert.xlsx', {sheetStubs: true});
 var rows = wb.SheetNames;
 
 console.log(XLSX.utils.sheet_to_json(wb.Sheets[rows[0]]));
 
-var Bronze = {
-    getbronze: function (callback) {
-        return db.query('SELECT * FROM user', callback);
+var Gold = {
+    getGold: function (callback) {
+        return db.query('SELECT * FROM user_center', callback);
     },
-    createbronze: function (Bronze, callback) {
-        return db.query('INSERT INTO user(' +
+    createGold: function (Gold, callback) {
+        return db.query('INSERT INTO user_center(' +
             'email' +
             'first_name' +
             'last_name' +
@@ -19,16 +19,18 @@ var Bronze = {
             'picture' +
             'monCV' +
             'matieres' +
+            'siret' +
             ') values(?,?,?,?,?,?,?,?,?)',
             [
-                Bronze.email,
-                Bronze.fist_name,
-                Bronze.last_name,
-                Bronze.address,
-                Bronze.mobile_phone,
-                Bronze.picture,
-                Bronze.monCv,
-                Bronze.matieres
+                Gold.email,
+                Gold.fist_name,
+                Gold.last_name,
+                Gold.address,
+                Gold.mobile_phone,
+                Gold.picture,
+                Gold.matieres,
+                Gold.monCv,
+                Gold.siret
             ], callback);
     }
 }
