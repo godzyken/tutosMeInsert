@@ -9,7 +9,8 @@ const columns = {
     ville: 5,
     mobile: 6,
     monCv: 7,
-    matieres: 8
+    matieres: 8,
+    siret: 9
 };
 
 module.exports = async (Models) => {
@@ -27,6 +28,7 @@ module.exports = async (Models) => {
         user.imageProfile = row[headers[columns.imageProfile]];
         user.monCv = row[headers[columns.monCv]];
         user.matieres = row[headers[columns.matieres]];
+        user.siret = row[headers[columns.siret]];
 
 
         // await user.save();
