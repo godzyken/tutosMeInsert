@@ -8,13 +8,15 @@ const columns = {
     ccp: 4,
     ville: 5,
     mobile: 6,
-    monCv: 7,
+    nomCv: 7,
     matieres: 8,
     siret: 9
 };
 
+
+
 module.exports = async (Models) => {
-    const {headers, rows} = XlsxExtractor("./BBD Gold insert.xlsx");
+    const {headers, rows} = XlsxExtractor("./BDD Bronze insert2.xlsx");
 
     for (row of rows) {
         const user = Models.User.build();
@@ -26,12 +28,12 @@ module.exports = async (Models) => {
         user.ville = row[headers[columns.ville]];
         user.mobile = row[headers[columns.mobile]];
         user.imageProfile = row[headers[columns.imageProfile]];
-        user.monCv = row[headers[columns.monCv]];
+        user.nomCv = row[headers[columns.nomCv]];
         user.matieres = row[headers[columns.matieres]];
         user.siret = row[headers[columns.siret]];
 
 
-        // await user.save();
+        await user.save();
         const userCenter = Models.UserCenter.build();
         userCenter.user_id = user.id;
         userCenter.center_id = userCenter.center_id;

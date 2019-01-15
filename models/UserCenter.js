@@ -12,10 +12,18 @@ module.exports = (sequelize, models) => {
             },
             user_id: {
                 type: DataTypes.INTEGER,
+                references:{
+                    models: 'User',
+                    key: 'id'
+                },
                 allowNull: false
             },
             center_id: {
                 type: DataTypes.INTEGER,
+                references: {
+                    models: 'Centers',
+                    key: 'siret'
+                },
                 allowNull: false
             },
             created_at: {

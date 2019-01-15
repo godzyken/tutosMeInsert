@@ -49,8 +49,23 @@ module.exports = (sequelize, models) => {
             matieres: {
                 type: DataTypes.STRING,
                 allowNull: true
+            },
+            siret: {
+                type: DataTypes.STRING,
+                references:{
+                  models: 'Centers',
+                  key: 'siret'
+                },
+                allowNull: true
+            },
+            createdAt: {
+                allowNull: false,
+                type: Sequelize.DATE
+            },
+            updatedAt: {
+                allowNull: false,
+                type: Sequelize.DATE
             }
-            // TODO FIX ME
         };
 
         models.User = sequelize.define('User', schema, {
