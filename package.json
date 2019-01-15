@@ -2,9 +2,9 @@
   "name": "tutosmeinsert",
   "version": "1.0.0",
   "description": "server connecter a la base de donnee tutosME",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "test"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -24,12 +24,17 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-list-endpoints": "^4.0.0",
+    "fs-extra": "7.0.1",
+    "glob": "7.1.3",
     "js-xlsx": "0.8.22",
     "lodash": "^4.17.11",
     "mysql": "^2.16.0",
     "mysql2": "1.6.4",
     "node-xlsx": "^0.12.1",
     "officegen": "^0.4.7",
+    "sequelize": "4.42.0",
+    "string": "3.3.3",
+    "underscore": "1.9.1",
     "xlsx": "^0.14.1",
     "xmlbuilder": "^10.1.1"
   }

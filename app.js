@@ -1,10 +1,26 @@
-var express = require('express');
-var app = express();
+const Sequelize = require('sequelize');
+const glob = require("glob");
+const fs = require("fs-extra");
 
-// var BronzeController = require('./bronze/BronzeController');
-// app.use('/bronze', BronzeController);
+const sequelize = new Sequelize('tutosme.dev', 'tutosme.dev', 'HNmB1g1KWEODsI2u', {
+    host: 'appsvelocity.cabutdpbsmsc.eu-west-3.rds.amazonaws.com',
+    dialect: 'mysql'
+});
 
-var GoldController = require('./gold/GoldController');
-app.use('/gold', GoldController);
+const Models = {};
 
-module.exports = app;
+(async () => {
+    await sequelize.authenticate();
+
+    glob.sync("./models/*.js").forEach(file => {
+        require(file)(sequelize, Models);
+    });
+
+    let data = await require("./gold")(Models);
+
+    await fs.outputFile("./gold/data.json", JSON.stringify(data, null, 4), "utf8");
+
+    console.log("END");
+})().catch(err => {
+    console.error(err);
+});
