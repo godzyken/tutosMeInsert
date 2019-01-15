@@ -13,6 +13,42 @@ module.exports = (sequelize, models) => {
             email: {
                 type: DataTypes.STRING,
                 allowNull: true
+            },
+            nom: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            prenom: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            addresse: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            ccp: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            ville: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            mobile: {
+                type: DataTypes.INTEGER,
+                allowNull: true
+            },
+            imageProfile: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            nomCv: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            matieres: {
+                type: DataTypes.STRING,
+                allowNull: true
             }
             // TODO FIX ME
         };
