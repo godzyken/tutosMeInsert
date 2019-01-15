@@ -1,10 +1,16 @@
-var mysql = require('mysql');
+var mysql = require('mysql2/promise');
+var maillemsql = require('mysql');
 
-var connection = mysql.createPool({
-    host: 'localhost:3306',                     // Lien de la bdd - cloud http://52.47.104.12/mysqlCloudManager/
-    user: 'root',                               // Loggin : tutosme.dev
-    password: '',                               // MDP : HNmB1g1KWEODsI2u
-    database: 'tutoseme'                        // Bdd dev : tutosme.dev
-    // server: 'appsvelocity.cabutdpbsmsc.eu-west-3.rds.amazonaws.com' // serveur de dev
+var connection = maillemsql.createConnection({
+    host: 'appsvelocity.cabutdpbsmsc.eu-west-3.rds.amazonaws.com',                      // server: 'appsvelocity.cabutdpbsmsc.eu-west-3.rds.amazonaws.com'
+    user: 'tutosme.dev',                               // Loggin : tutosme.dev
+    password: 'HNmB1g1KWEODsI2u',                               // MDP : HNmB1g1KWEODsI2u
+    database: 'tutosme.dev',                        // Bdd dev : tutosme.dev
+
 });
+
+connection.connect(function() {
+    console.log("Connected!");
+});
+
 module.exports = connection;

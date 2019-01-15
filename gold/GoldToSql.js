@@ -1,8 +1,22 @@
 var db = require('../db');
 var XLSX = require('xlsx');
 var assert = require('assert');
-var SheetJSSQL = require('./goldz.xlsx');
+var SheetJSSQL = require('../SheetJSSQL');
 var mysql = require('mysql2/promise');
+
+var maillemsql = require('mysql');
+
+var connection = maillemsql.createConnection({
+    host: 'appsvelocity.cabutdpbsmsc.eu-west-3.rds.amazonaws.com',                      // server: 'appsvelocity.cabutdpbsmsc.eu-west-3.rds.amazonaws.com'
+    user: 'tutosme.dev',                               // Loggin : tutosme.dev
+    password: 'HNmB1g1KWEODsI2u',                               // MDP : HNmB1g1KWEODsI2u
+    database: 'tutosme.dev',                        // Bdd dev : tutosme.dev
+
+});
+
+connection.connect(function() {
+    console.log("Connected!");
+});
 
 
 /* Sample data table */
@@ -21,8 +35,8 @@ var init = [
 
 
 (async () => {
-    var Gold = require('gold');
-    const conect1 = await mysql.createConnection(Gold.getGold({}, db, {database: "sheetjs"}));
+    var Gold = require('./gold');
+    const conect1 = await maillemsql.createConnection(Gold.getGold({}, db, {database: "sheetjs"}));
     for (var i = 0; i < init.length; ++i) await conect1.query(init[i]);
 
     /* Exporte la table pour XLSX */
@@ -42,11 +56,11 @@ var init = [
     /* Comparer en premier les informations de la base de donnée et ferme le flux */
     var P1 = (await conect1.query("SELECT * FROM pres"))[0];
     var F1 = (await conect1.query("SELECT * FROM fmts"))[0];
-    await conect1.close();
+    //await conect1.close();
 
     /* Importe les datas XLSX en table*/
 
-    const conect2 = await mysql.createConnection(Gold.createGold({}, db, {database: "sheetj5"}));
+    const conect2 = await maillemsql.createConnection(Gold.createGold({}, db, {database: "sheetj5"}));
     var wb2 = XLSX.readFile("mysql.xlsx");
     var queries = SheetJSSQL.book_to_sql(wb2, "MYSQL");
     for(i = 0; i < queries.length; ++i) await conect2.query(queries[i]);
@@ -54,7 +68,7 @@ var init = [
     /* Comparer en premier les informations de la base de donnée et ferme le flux */
     var P2 = (await conect2.query("SELECT * FROM pres"))[0];
     var F2 = (await conect2.query("SELECT * FROM fmts"))[0];
-    await conect2.close();
+    // await conect2.close();
 
     /* Compare les resultats */
     assert.deepStrictEqual(P1,P2);

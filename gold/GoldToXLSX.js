@@ -1,5 +1,5 @@
 var XLSX = require('xlsx');
-var wb = new XLSX.readFile('./gold/goldz.xlsx', {sheetStubs: true});
+var wb = new XLSX.readFile('./BBD Gold insert.xlsx', {sheetStubs: true});
 var goldtoxlsx = wb.SheetNames;
 
 goldtoxlsx.forEach(function (y) {
