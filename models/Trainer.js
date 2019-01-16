@@ -3,71 +3,75 @@ const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
 module.exports = (sequelize, models) => {
-    if (!sequelize.isDefined("User")) {
+    if (!sequelize.isDefined("Trainer")) {
         let schema = {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            email: {
+            user_id: {
+                type: DataTypes.INTEGER,
+                references:{
+                    model: 'User',
+                    key: 'id'
+                },
+                allowNull: true
+            },
+            level: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            first_name: {
-                type: DataTypes.STRING,
+            hourly_rate: {
+                type: DataTypes.DECIMAL,
                 allowNull: true
             },
-            last_name: {
-                type: DataTypes.STRING,
+            resume: {
+                type: DataTypes.TEXT,
                 allowNull: true
             },
-            address: {
-                type: DataTypes.STRING,
-                allowNull: true
-            },
-            latitude: {
+            rib: {
                 type: DataTypes.INTEGER,
                 allowNull: true
             },
-            longitude: {
+            rib_file: {
                 type: DataTypes.INTEGER,
                 allowNull: true
             },
-            mobile_phone: {
+            contract: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            phone_number: {
+            id_card: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            password: {
+            health_card: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            picture: {
+            medecine_proof: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            type: {
+            siren: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            status: {
+            siren_file: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            lastlongin_at: {
-                type: DataTypes.DATE,
-                allowNull: true
-            },
-            remember_token: {
+            attestation_urssaf: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            role_id: {
-                type: DataTypes.INTEGER,
+            siren_waiting: {
+                type: DataTypes.TINYINT,
+                allowNull: true
+            },
+            freelancer: {
+                type: DataTypes.TINYINT,
                 allowNull: true
             },
             createdAt: {
@@ -77,19 +81,31 @@ module.exports = (sequelize, models) => {
             updatedAt: {
                 allowNull: true,
                 type: DataTypes.DATE
-            }
+            },
+            in_training: {
+                type: DataTypes.TINYINT,
+                allowNull: true
+            },
+            permis: {
+                type: DataTypes.TINYINT,
+                allowNull: true
+            },
+            skills_json: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
         };
 
-        models.User = sequelize.define('User', schema, {
+        models.Trainer = sequelize.define('Trainer', schema, {
             timestamps: false,
             createdAt: 'chn_insert',
             updatedAt: 'chn_update',
             freezeTableName: true,
-            tableName: 'user'
+            tableName: 'trainer'
         });
 
-        require("./UserCenter")(sequelize, models);
+        require("./User")(sequelize, models);
 
-        models.User.hasMany(models.UserCenter, {foreignKey: 'user_id', as: 'UserCenters'});
+        models.Trainer.hasMany(models.User, {foreignKey: 'user_id', as: 'Users'});
     }
 };

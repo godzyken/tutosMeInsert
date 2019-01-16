@@ -3,22 +3,22 @@ const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
 module.exports = (sequelize, models) => {
-    if (!sequelize.isDefined("UserCenter")) {
+    if (!sequelize.isDefined("TrainerSkill")) {
         let schema = {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            user_id: {
+            trainer_id: {
                 type: DataTypes.INTEGER,
                 references:{
-                    model: 'User',
+                    model: 'Trainer',
                     key: 'id'
                 },
                 allowNull: false
             },
-            center_id: {
+            skill_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
@@ -31,23 +31,19 @@ module.exports = (sequelize, models) => {
                 field: 'updated_at',
                 type: DataTypes.DATE,
                 allowNull: true
-            },
-            type: {
-                type: DataTypes.ENUM('center_manager', 'group_manager'),
-                defaultValue: null
             }
         };
 
-        models.UserCenter = sequelize.define('UserCenter', schema, {
+        models.TrainerSkill = sequelize.define('TrainerSkill', schema, {
             timestamps: true,
             createdAt: 'chn_insert',
             updatedAt: 'chn_update',
             freezeTableName: true,
-            tableName: 'user_center'
+            tableName: 'trainer_skill'
         });
 
-        require("./User")(sequelize, models);
+        require("./Trainer")(sequelize, models);
 
-        models.UserCenter.belongsTo(models.User, {foreignKey: 'user_id', as: 'User'});
+        models.TrainerSkill.belongsTo(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
     }
 };
