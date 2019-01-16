@@ -12,10 +12,6 @@ module.exports = (sequelize, models) => {
             },
             trainer_id: {
                 type: DataTypes.INTEGER,
-                references:{
-                    model: 'Trainer',
-                    key: 'id'
-                },
                 allowNull: false
             },
             skill_id: {
@@ -43,7 +39,9 @@ module.exports = (sequelize, models) => {
         });
 
         require("./Trainer")(sequelize, models);
+        require("./Skills")(sequelize, models);
 
         models.TrainerSkill.belongsTo(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
+        models.TrainerSkill.belongsTo(models.Trainer, {foreignKey: 'skill_id', as: 'Skills'});
     }
 };
