@@ -4,7 +4,7 @@ const DataTypes = Sequelize.DataTypes;
 
 module.exports = (sequelize, models) => {
     if (!sequelize.isDefined("UserCenter")) {
-        var schema = {
+        let schema = {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -12,17 +12,21 @@ module.exports = (sequelize, models) => {
             },
             user_id: {
                 type: DataTypes.INTEGER,
+                references:{
+                    model: 'User',
+                    key: 'id'
+                },
                 allowNull: false
             },
             center_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: true
             },
-            created_at: {
+            createdAt: {
                 type: DataTypes.DATE,
-                allowNull: false
+                allowNull: true
             },
-            updated_at: {
+            updatedAt: {
                 type: DataTypes.DATE,
                 allowNull: true
             },

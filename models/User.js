@@ -4,7 +4,7 @@ const DataTypes = Sequelize.DataTypes;
 
 module.exports = (sequelize, models) => {
     if (!sequelize.isDefined("User")) {
-        var schema = {
+        let schema = {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -14,43 +14,70 @@ module.exports = (sequelize, models) => {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            nom: {
+            first_name: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            prenom: {
+            last_name: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            addresse: {
+            address: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            ccp: {
-                type: DataTypes.STRING,
-                allowNull: true
-            },
-            ville: {
-                type: DataTypes.STRING,
-                allowNull: true
-            },
-            mobile: {
+            latitude: {
                 type: DataTypes.INTEGER,
                 allowNull: true
             },
-            imageProfile: {
+            longitude: {
+                type: DataTypes.INTEGER,
+                allowNull: true
+            },
+            mobile_phone: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            nomCv: {
+            phone_number: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            matieres: {
+            password: {
                 type: DataTypes.STRING,
                 allowNull: true
+            },
+            picture: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            type: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            status: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            lastlongin_at: {
+                type: DataTypes.DATE,
+                allowNull: true
+            },
+            remember_token: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            role_id: {
+                type: DataTypes.INTEGER,
+                allowNull: true
+            },
+            createdAt: {
+                allowNull: true,
+                type: DataTypes.DATE
+            },
+            updatedAt: {
+                allowNull: true,
+                type: DataTypes.DATE
             }
-            // TODO FIX ME
         };
 
         models.User = sequelize.define('User', schema, {
