@@ -42,6 +42,6 @@ module.exports = (sequelize, models) => {
         require("./Skills")(sequelize, models);
 
         models.TrainerSkill.belongsTo(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
-        models.TrainerSkill.belongsTo(models.Trainer, {foreignKey: 'skill_id', as: 'Skills'});
+        models.TrainerSkill.belongsTo(models.Skills, {foreignKey: 'skill_id', as: 'Skills'});
     }
 };
