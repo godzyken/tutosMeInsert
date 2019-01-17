@@ -20,7 +20,7 @@ module.exports = (sequelize, models) => {
             },
             center_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: true
             },
             createdAt: {
                 field: 'created_at',
@@ -40,8 +40,8 @@ module.exports = (sequelize, models) => {
 
         models.UserCenter = sequelize.define('UserCenter', schema, {
             timestamps: true,
-            createdAt: 'chn_insert',
-            updatedAt: 'chn_update',
+            // createdAt: 'chn_insert',
+            // updatedAt: 'chn_update',
             freezeTableName: true,
             tableName: 'user_center'
         });

@@ -1,4 +1,9 @@
 const XlsxExtractor = require("../xlsxExtractor");
+const fs = require('fs');
+const request = require('request');
+
+const dl = require('../downloader');
+
 
 const columns = {
     email: 0,
@@ -19,7 +24,8 @@ module.exports = async (Models) => {
 
     for (row of rows) {
 
-        // import des données depuis le fichier
+        /* --- Créer un User a partir d'une ligne/row du fichier excel --- */
+
         const user = Models.User.build();
         user.email = row[headers[columns.email]];
         user.first_name = row[headers[columns.first_name]];
@@ -33,37 +39,58 @@ module.exports = async (Models) => {
         user.matieres = row[headers[columns.matieres]];
         user.siret = row[headers[columns.siret]];
 
-        await user.save();
+        // sauvegarder chaque User dans la bdd
+        // await user.save();
 
 
-        // insertion des clé étrangères dans la table userCenter
-        const userCenter = Models.UserCenter.build();
-        userCenter.user_id = user.id;
-        // userCenter.center_id = Center.id;
-        // userCenter.type = Center.type;
-
-        await userCenter.save();
-
-
-        // insertion des clé étrangères dans la table trainer
+        // creer un user(trainer) dans la table trainer
         const trainer = Models.Trainer.build();
         trainer.user_id = user.id;
 
-        await trainer.save();
+        // sauvegarder chaque Trainer dans la bdd
+        // await trainer.save();
 
         // initialiser l'information matieres
         const skills = Models.Skills.build();
         skills.name = user.matieres;
 
-        await skills.save();
 
-        // insertion des clé étrangères dans la table trainer
-        const trainerSkill = Models.TrainerSkill.build();
-        trainerSkill.trainer_id = trainer.id;
-        trainerSkill.skill_id = skills.id;
+        /* ---- import des informations dans l'arborescence ----*/
 
-        await trainer.save();
+        // recupération de l'url de la photo-client
+        let uri = user.picture;
 
+        // construction du nom de fichier
+        let filename = [user.first_name] + [user.last_name];
+
+        // charge les données dans les repertoires définies
+        let path = './images/' + filename;
+
+        console.log("l'URL de l'image est: " + uri);
+        console.log("le nom de l'image serra: " + filename);
+        console.log("le fichier de destination serra: " + path);
+
+        let download = function (uri, filename, callback) {
+
+            if (typeof uri === 'undefined' in row) {
+                throw new Error('désolé vous n\'avez pas fourni de photo profile.');
+
+            } else {
+                return uri;
+            }
+
+            request.head(uri, function (err, res, body) {
+                request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+            });
+        };
+
+
+        download(uri, path, function () {
+            console.log('done');
+        });
+
+
+        console.log(download);
 
 
         console.log(user.toJSON());

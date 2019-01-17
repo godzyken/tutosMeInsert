@@ -1,6 +1,10 @@
 const Sequelize = require('sequelize');
 
+
+
 const DataTypes = Sequelize.DataTypes;
+
+// const Image = Sequelize.afterBulkSync('image',DataTypes);
 
 module.exports = (sequelize, models) => {
     if (!sequelize.isDefined("User")) {
@@ -47,7 +51,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             picture: {
-                type: DataTypes.STRING,
+                type: DataTypes.BLOB,
                 allowNull: true
             },
             type: {
