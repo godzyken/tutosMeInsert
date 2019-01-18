@@ -72,18 +72,21 @@ module.exports = async (Models) => {
 
         let download = function (uri, filename, callback) {
 
-            if (typeof uri === 'undefined' in row) {
-                throw new Error('désolé vous n\'avez pas fourni de photo profile.');
-
-            } else {
-                return uri;
-            }
+            // if (typeof uri === 'undefined' in row) {
+            //     throw new Error('désolé vous n\'avez pas fourni de photo profile.');
+            //
+            // } else {
+            //     return uri;
+            // }
 
             request.head(uri, function (err, res, body) {
+                console.log('content-type:', res.headers['content-type']);
+                console.log('content-length:', res.headers['content-length']);
+
                 request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+
             });
         };
-
 
         download(uri, path, function () {
             console.log('done');
