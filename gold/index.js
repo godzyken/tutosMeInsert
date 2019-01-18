@@ -101,3 +101,49 @@ module.exports = async (Models) => {
 
     return rows;
 };
+
+
+/*
+
+You can use Axios (a promise-based HTTP client for Node.js) to download images in the order of your choosing in an asynchronous environment:
+
+    npm i axios
+Then, you can use the following basic example to begin downloading images:
+
+    const fs    = require( 'fs' );
+const axios = require( 'axios' );
+
+/!* ============================================================
+    Function: Download Image
+============================================================ *!/
+
+const download_image = ( url, image_path ) => axios( { 'url' : url, 'responseType' : 'stream' } ).then( response =>
+{
+    response.data.pipe( fs.createWriteStream( image_path ) );
+
+    return { 'status' : true, 'error' : '' };
+
+}).catch( error => ( { 'status' : false, 'error' : 'Error: ' + error.message } ) );
+
+/!* ============================================================
+    Download Images in Order
+============================================================ *!/
+
+(async () =>
+{
+    let example_image_1 = await download_image( 'https://example.com/test-1.png', 'example-1.png' );
+
+    console.log( example_image_1.status ); // true
+    console.log( example_image_1.error );  // ''
+
+    let example_image_2 = await download_image( 'https://example.com/does-not-exist.png', 'example-2.png' );
+
+    console.log( example_image_2.status ); // false
+    console.log( example_image_2.error );  // 'Error: Request failed with status code 404'
+
+    let example_image_3 = await download_image( 'https://example.com/test-3.png', 'example-3.png' );
+
+    console.log( example_image_3.status ); // true
+    console.log( example_image_3.error );  // ''
+
+})();*/
