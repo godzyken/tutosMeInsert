@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-
 const DataTypes = Sequelize.DataTypes;
 
 module.exports = (sequelize, models) => {
@@ -12,14 +11,10 @@ module.exports = (sequelize, models) => {
             },
             user_id: {
                 type: DataTypes.INTEGER,
-                references:{
-                    model: 'User',
-                    key: 'id'
-                },
                 allowNull: true
             },
             level: {
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM('bronze', 'silver', 'gold', 'greylist', 'blacklist'),
                 allowNull: true
             },
             hourly_rate: {
@@ -31,11 +26,11 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             rib: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING,
                 allowNull: true
             },
             rib_file: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING,
                 allowNull: true
             },
             contract: {
@@ -91,7 +86,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             skills_json: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: true
             },
         };

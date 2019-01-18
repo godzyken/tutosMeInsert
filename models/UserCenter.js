@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-
 const DataTypes = Sequelize.DataTypes;
 
 module.exports = (sequelize, models) => {
@@ -12,10 +11,6 @@ module.exports = (sequelize, models) => {
             },
             user_id: {
                 type: DataTypes.INTEGER,
-                references:{
-                    model: 'User',
-                    key: 'id'
-                },
                 allowNull: false
             },
             center_id: {
@@ -40,8 +35,8 @@ module.exports = (sequelize, models) => {
 
         models.UserCenter = sequelize.define('UserCenter', schema, {
             timestamps: true,
-            // createdAt: 'chn_insert',
-            // updatedAt: 'chn_update',
+            createdAt: 'chn_insert',
+            updatedAt: 'chn_update',
             freezeTableName: true,
             tableName: 'user_center'
         });

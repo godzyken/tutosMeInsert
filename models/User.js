@@ -1,10 +1,5 @@
 const Sequelize = require('sequelize');
-
-
-
 const DataTypes = Sequelize.DataTypes;
-
-// const Image = Sequelize.afterBulkSync('image',DataTypes);
 
 module.exports = (sequelize, models) => {
     if (!sequelize.isDefined("User")) {
@@ -31,11 +26,11 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             latitude: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DECIMAL(10, 0),
                 allowNull: true
             },
             longitude: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DECIMAL(10, 0),
                 allowNull: true
             },
             mobile_phone: {
@@ -55,11 +50,11 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             type: {
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM('boss', 'worker', 'trainer', 'customer'),
                 allowNull: true
             },
             status: {
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM('waiting', 'active', 'deleted'),
                 allowNull: true
             },
             lastlongin_at: {
@@ -67,7 +62,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             remember_token: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: true
             },
             role_id: {
