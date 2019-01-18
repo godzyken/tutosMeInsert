@@ -1,7 +1,7 @@
 const XlsxExtractor = require("../xlsxExtractor");
 const fs = require('fs');
 const request = require('request');
-
+const stream = require('stream');
 const dl = require('../downloader');
 
 
@@ -41,8 +41,7 @@ module.exports = async (Models) => {
 
         // sauvegarder chaque User dans la bdd
         // await user.save();
-
-
+        
         // creer un user(trainer) dans la table trainer
         const trainer = Models.Trainer.build();
         trainer.user_id = user.id;
@@ -72,15 +71,25 @@ module.exports = async (Models) => {
 
         let download = function (uri, filename, callback) {
 
-            if (typeof uri === 'undefined' in row) {
-                throw new Error('désolé vous n\'avez pas fourni de photo profile.');
-
-            } else {
-                return uri;
-            }
-
             request.head(uri, function (err, res, body) {
-                request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+                if (err) callback(err, filename);
+                else {
+                    console.log('content-type:', res.headers['content-type']);
+                    console.log('content-length:', res.headers['content-length']);
+                    var stream = request(uri);
+                    var [type, ext] = res.headers['content-type'].split("/");
+
+                    stream.pipe(
+                        fs.createWriteStream(`${filename}.${ext}`)
+                            .on('error', function (err) {
+                                callback(error, filename);
+                                stream.read();
+                            })
+                    )
+                        .on('close', function () {
+                            callback(null, filename);
+                        });
+                }
             });
         };
 
