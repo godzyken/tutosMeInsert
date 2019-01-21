@@ -21,12 +21,12 @@ const Models = {};
         require(file)(sequelize, Models);
     });
 
-    // let trainer = await require("./gold")(Models);
-    let client = await require("./bronze")(Models);
+    let trainer = await require("./gold/index")(Models);
+    // let client = await require("./bronze/index")(Models);
 
-    // await fs.outputFile("./gold/data.json", JSON.stringify(trainer, null, 4), "utf8");
+    await fs.outputFile("./gold/data.json", JSON.stringify(trainer, null, 4), "utf8");
 
-    await fs.outputFile("./bronze/data.json", JSON.stringify(client, null, 4), "utf8");
+    // await fs.outputFile("./bronze/data.json", JSON.stringify(client, null, 4), "utf8");
 
     console.log("END");
 })().catch(err => {
