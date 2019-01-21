@@ -1,8 +1,7 @@
-const XlsxExtractor = require("../xlsxExtractor");
+const XlsxExtractor = require('../utils/xlsxExtractor');
 const fs = require('fs');
-const request = require('request');
-const stream = require('stream');
-const dl = require('../downloader');
+const path = require('path');
+
 
 
 const columns = {
@@ -20,14 +19,15 @@ const columns = {
 };
 
 module.exports = async (Models) => {
-    const {headers, rows} = XlsxExtractor("./BBD Gold insert.xlsx");
+    const {headers, rows} = XlsxExtractor("./BBD gold/BBD gold/BBD Gold.xlsx");
 
-    // let trainer = new user();
-    const user = require('../models/User');
+    let pathFilePicture = 'BBD gold/BBD gold/Photos/';
+    let pathFileCV = 'BBD gold/BBD gold/CV';
+
+
 
 
     for (row of rows) {
-
         /* --- Créer un User a partir d'une ligne/row du fichier excel --- */
 
         const trainer = Models.Trainer.build();
@@ -38,73 +38,98 @@ module.exports = async (Models) => {
         trainer.ccp = row[headers[columns.ccp]];
         trainer.ville = row[headers[columns.ville]];
         trainer.mobile_phone = row[headers[columns.mobile_phone]];
-        trainer.picture = row[headers[columns.picture]];
+        trainer.picture = row[headers[columns.picture]] || "";
         trainer.monCv = row[headers[columns.monCv]];
         trainer.matieres = row[headers[columns.matieres]];
         trainer.siret = row[headers[columns.siret]];
 
         trainer.user_id = Models.User.id;
 
-        console.log(trainer);
+        /* ---- recupere le nom de la photo ---- */
+
+        if (trainer.picture && trainer.picture != "") {
+
+            let filename = trainer.first_name + trainer.last_name;
+
+            let src = path.join(pathFilePicture, trainer.picture);
+
+            let destDir = path.join(__dirname, '/formateur/' + filename);
+
+            fs.access(destDir, (err) => {
+                if (err) {
+                    console.log(err);
+                    fs.mkdirSync(destDir);
+                }
+                copyFile(src, path.join(destDir, filename));
+            });
+
+            function copyFile(src, dest) {
+
+                let readStream = fs.createReadStream(src);
+
+                readStream.once('error', (err) => {
+                    console.log(err);
+                });
+
+                readStream.once('end', () => {
+                    console.log('copy ok pour le formateur:' + filename);
+                    console.log("Src : ", src);
+                    console.log("Dest : ", dest)
+                });
+
+                readStream.pipe(fs.createWriteStream(dest));
+            }
+
+        }
+        else {
+            console.log("pas d'image pour : ", trainer.first_name)
+        }
+
+
+        if (trainer.nomCv && trainer.nomCv != "") {
+
+            let filename = trainer.first_name + trainer.last_name;
+
+            let src = path.join(pathFileCV, trainer.nomCv);
+
+            let destDir = path.join(__dirname, '/formateur/' + filename);
+
+            fs.access(destDir, (err) => {
+                if (err) {
+                    console.log(err);
+                    fs.mkdirSync(destDir);
+                }
+                copyFile(src, path.join(destDir, filename));
+            });
+
+            function copyFile(src, dest) {
+
+                let readStream = fs.createReadStream(src);
+
+                readStream.once('error', (err) => {
+                    console.log(err);
+                });
+
+                readStream.once('end', () => {
+                    console.log('copy ok pour :');
+                    console.log("Src : ", src);
+                    console.log("Dest : ", dest)
+                });
+
+                readStream.pipe(fs.createWriteStream(dest));
+            }
+
+        }
+        else {
+            console.log("pas de cv pour : ", filename)
+        }
 
         // sauvegarder chaque User dans la bdd
         // await trainer.save();
 
-
-        /* ---- import des informations dans l'arborescence ----*/
-
-        // recupération de l'url de la photo-client
-        let uri = user.picture;
-
-        // construction du nom de fichier
-        let filename = [user.first_name] + [user.last_name];
-
-        // charge les données dans les repertoires définies
-        let path = './images/' + filename;
-
-        console.log("l'URL de l'image est: " + uri);
-        console.log("le nom de l'image serra: " + filename);
-        console.log("le fichier de destination serra: " + path);
-
-
-        /* ---- Telecharger la photo profile par on url ---- */
-
-        let download = function (uri, filename, callback) {
-
-            request.head(uri, function (err, res, body) {
-                if (err) callback(err, filename);
-                else {
-                    console.log('content-type:', res.headers['content-type']);
-                    console.log('content-length:', res.headers['content-length']);
-                    var stream = request(uri);
-                    var [type, ext] = res.headers['content-type'].split("/");
-
-                    stream.pipe(
-                        fs.createWriteStream(`${filename}.${ext}`)
-                            .on('error', function (err) {
-                                callback(error, filename);
-                                stream.read();
-                            })
-                    )
-                        .on('close', function () {
-                            callback(null, filename);
-                        });
-                }
-            });
-        };
-
-
-        download(uri, path, function () {
-            console.log('done');
-        });
-
-        // affichege du resultat
-
-        console.log(download);
-
-
         console.log(trainer.toJSON());
     }
+
 
     return rows;
 };
