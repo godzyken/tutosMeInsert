@@ -42,5 +42,9 @@ module.exports = (sequelize, models) => {
             freezeTableName: true,
             tableName: 'skills'
         });
+
+        require("./Trainer")(sequelize,models);
+
+        models.Skills.hasMany(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
     }
 };

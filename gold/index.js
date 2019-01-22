@@ -2,8 +2,19 @@ const XlsxExtractor = require('../utils/xlsxExtractor');
 const fs = require('fs');
 const path = require('path');
 
+/* -------------------------------------------------- */
+/* -------------------------------------------------- */
+/* ----------- Création d'un User Gold -------------- */
+/* -------------------------------------------------- */
+/* -------------------------------------------------- */
+/* - -Parcour le fichier Excel: 'BBD Bronze.Xlsx' --- */
+/* - -Extrait les informations ligne par ligne    --- */
+/* - -Copies les Images de profile utilisateur    --- */
+/* - -Copies les Cv de chaque profile utilisateur --- */
+/* - -Sauvegarde les données dans la Table: 'User'--- */
+/* -------------------------------------------------- */
 
-
+// Initialise le tableau de champs de données.
 const columns = {
     email: 0,
     first_name: 1,
@@ -19,16 +30,16 @@ const columns = {
 };
 
 module.exports = async (Models) => {
+
+    // script d'extraction de données
     const {headers, rows} = XlsxExtractor("./BBD gold/BBD gold/BBD Gold.xlsx");
 
+    // injitialise les repertoires de recherche
     let pathFilePicture = 'BBD gold/BBD gold/Photos/';
     let pathFileCV = 'BBD gold/BBD gold/CV';
 
 
-
-
     for (row of rows) {
-        /* --- Créer un User a partir d'une ligne/row du fichier excel --- */
 
         const trainer = Models.Trainer.build();
         trainer.email = row[headers[columns.email]];
@@ -45,16 +56,17 @@ module.exports = async (Models) => {
 
         trainer.user_id = Models.User.id;
 
-        /* ---- recupere le nom de la photo ---- */
-
+        // Recherche par Nom de fichier
         if (trainer.picture && trainer.picture != "") {
 
+            // Construit le Nom de l'image Utilisateur
             let filename = trainer.first_name + trainer.last_name;
 
+            // Parcours le répertoire source d'images
             let src = path.join(pathFilePicture, trainer.picture);
 
+            // Construit le nom du repertoire destinataire
             let destDir = path.join(__dirname, '/formateur/' + filename);
-
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);
@@ -63,6 +75,7 @@ module.exports = async (Models) => {
                 copyFile(src, path.join(destDir, filename));
             });
 
+            // Copie l'image dans le répertoire destinataire
             function copyFile(src, dest) {
 
                 let readStream = fs.createReadStream(src);
@@ -86,14 +99,17 @@ module.exports = async (Models) => {
         }
 
 
+        // Recherche par Nom de fichier
         if (trainer.nomCv && trainer.nomCv != "") {
 
+            // Construit le Nom du CV de l'Utilisateur
             let filename = trainer.first_name + trainer.last_name;
 
+            // Parcours le répertoire source de CV
             let src = path.join(pathFileCV, trainer.nomCv);
 
+            // Construit le nom du repertoire destinataire
             let destDir = path.join(__dirname, '/formateur/' + filename);
-
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);
@@ -102,6 +118,7 @@ module.exports = async (Models) => {
                 copyFile(src, path.join(destDir, filename));
             });
 
+            // Copie l'image dans le répertoire destinataire
             function copyFile(src, dest) {
 
                 let readStream = fs.createReadStream(src);
