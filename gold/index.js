@@ -2,6 +2,7 @@ const XlsxExtractor = require('../utils/xlsxExtractor');
 const fs = require('fs');
 const path = require('path');
 
+
 /* -------------------------------------------------- */
 /* -------------------------------------------------- */
 /* ----------- Création d'un User Gold -------------- */
@@ -13,6 +14,7 @@ const path = require('path');
 /* - -Copies les Cv de chaque profile utilisateur --- */
 /* - -Sauvegarde les données dans la Table: 'User'--- */
 /* -------------------------------------------------- */
+
 
 // Initialise le tableau de champs de données.
 const columns = {
@@ -78,7 +80,7 @@ module.exports = async (Models) => {
             let src = path.join(pathFilePicture, trainer.picture);
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/formateur/' + filename);
+            let destDir = path.join(__dirname, '/formateur/' + saniTize(filename));
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);

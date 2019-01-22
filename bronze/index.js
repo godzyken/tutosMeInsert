@@ -48,7 +48,6 @@ module.exports = async (Models) => {
     let pathFilePicture = 'BBD Bronze/BBD Bronze/Photos';
     let pathFileCV = 'BBD Bronze/BBD Bronze/CV';
 
-
     for (row of rows) {
 
         const user = Models.User.build();
@@ -76,7 +75,7 @@ module.exports = async (Models) => {
             let src = path.join(pathFilePicture, user.picture);
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/client/' + filename);
+            let destDir = path.join(__dirname, '/client/' + saniTize(filename));
             fs.access(destDir, (err) => {
                 if (err)
                     fs.mkdirSync(destDir);
@@ -111,7 +110,6 @@ module.exports = async (Models) => {
 
             // Construit le Nom du CV de l'Utilisateur
             let names = user.first_name + user.last_name;
-
 
             let filename = saniTize(names);
 
