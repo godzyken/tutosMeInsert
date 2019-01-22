@@ -2,6 +2,7 @@ const XlsxExtractor = require('../utils/xlsxExtractor');
 const fs = require('fs');
 const path = require('path');
 
+
 /* -------------------------------------------------- */
 /* -------------------------------------------------- */
 /* -----------Extrait creer User Bronze ------------- */
@@ -32,11 +33,13 @@ const columns = {
 module.exports = async (Models) => {
 
     /* ---- script d'extraction de données  ---- */
-    const {headers, rows} = XlsxExtractor("BBD Bronze/BBD Bronze/BDD Bronze insert.xlsx");
+    const {headers, rows} = XlsxExtractor("./BBD Bronze/BBD Bronze/BDD Bronze.xlsx");
 
-    /* --- injitialise les repertoires de recherche --- */
+    /* --- injitialise les srepertoires de recherche --- */
     let pathFilePicture = 'BBD Bronze/BBD Bronze/Photos';
     let pathFileCV = 'BBD Bronze/BBD Bronze/CV';
+
+
 
 
     for (row of rows) {
@@ -54,7 +57,7 @@ module.exports = async (Models) => {
         user.matieres = row[headers[columns.matieres]];
 
         // Recherche par Nom de fichier
-        if (user.picture && user.picture != "") {
+        if (user.picture && user.picture !== "") {
 
             // Construit le Nom de l'image Utilisateur
             let filename = [user.first_name] + [user.last_name];
@@ -67,10 +70,10 @@ module.exports = async (Models) => {
             fs.access(destDir, (err) => {
                 if (err)
                     fs.mkdirSync(destDir);
-                copyFile(src, path.join(destDir, filename));
+                copyFile(src, path.join(destDir, filename + '.png'));
             });
 
-           // Copie l'image dans le répertoire destinataire
+            // Copie l'image dans le répertoire destinataire
             function copyFile(src, dest) {
 
                 let readStream = fs.createReadStream(src);
@@ -81,7 +84,7 @@ module.exports = async (Models) => {
 
                 readStream.once('end', () => {
                     console.log('copy éffectuer le client: ' + filename);
-                    console.log("Src : ", src)
+                    console.log("Src : ", src);
                     console.log("Dest : ", dest)
                 });
 
@@ -89,12 +92,12 @@ module.exports = async (Models) => {
             }
         }
         else {
-            console.log("Erreur pas de photo-profile pour: ", filename)
+            console.log("Erreur pas de photo-profile pour: ")
         }
 
 
-       // Recherche par Nom de fichier
-        if (user.nomCv && user.nomCv != "") {
+        // Recherche par Nom de fichier
+        if (user.nomCv && user.nomCv !== "") {
 
             // Construit le Nom du CV de l'Utilisateur
             let filename = user.first_name + user.last_name;
@@ -109,7 +112,7 @@ module.exports = async (Models) => {
                     console.log(err);
                     fs.mkdirSync(destDir);
                 }
-                copyFile(src, path.join(destDir, filename));
+                copyFile(src, path.join(destDir, filename + '.pdf'));
             });
 
             // Copie l'image dans le répertoire destinataire
@@ -131,7 +134,7 @@ module.exports = async (Models) => {
             }
         }
         else {
-            console.log("pas de cv pour : ", filename)
+            console.log("pas de cv pour : ")
         }
 
         // sauvegarder chaque User dans la bdd

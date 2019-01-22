@@ -14,7 +14,7 @@ const ColumnsGenerator = function* (start) {
 
         if (j < columnsNum - 1) {
             return start.substring(0, i) + columns[j + 1] + start.substring(i + 1);
-        } else if (i == 0) {
+        } else if (i === 0) {
             return S("A").repeat(start.length + 1).s;
         } else {
             start = incCharAt(i - 1);

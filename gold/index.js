@@ -57,7 +57,7 @@ module.exports = async (Models) => {
         trainer.user_id = Models.User.id;
 
         // Recherche par Nom de fichier
-        if (trainer.picture && trainer.picture != "") {
+        if (trainer.picture && trainer.picture !== "") {
 
             // Construit le Nom de l'image Utilisateur
             let filename = trainer.first_name + trainer.last_name;
@@ -72,7 +72,7 @@ module.exports = async (Models) => {
                     console.log(err);
                     fs.mkdirSync(destDir);
                 }
-                copyFile(src, path.join(destDir, filename));
+                copyFile(src, path.join(destDir, filename + '.png'));
             });
 
             // Copie l'image dans le répertoire destinataire
@@ -100,7 +100,7 @@ module.exports = async (Models) => {
 
 
         // Recherche par Nom de fichier
-        if (trainer.nomCv && trainer.nomCv != "") {
+        if (trainer.nomCv && trainer.nomCv !== "") {
 
             // Construit le Nom du CV de l'Utilisateur
             let filename = trainer.first_name + trainer.last_name;
@@ -115,7 +115,7 @@ module.exports = async (Models) => {
                     console.log(err);
                     fs.mkdirSync(destDir);
                 }
-                copyFile(src, path.join(destDir, filename));
+                copyFile(src, path.join(destDir, filename + '.pdf'));
             });
 
             // Copie l'image dans le répertoire destinataire
@@ -138,7 +138,7 @@ module.exports = async (Models) => {
 
         }
         else {
-            console.log("pas de cv pour : ", filename)
+            console.log("pas de cv disponible !")
         }
 
         // sauvegarder chaque User dans la bdd

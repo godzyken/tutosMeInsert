@@ -87,8 +87,8 @@ module.exports = (sequelize, models) => {
             tableName: 'user'
         });
 
-        require("./UserCenter")(sequelize, models);
+        require("./Trainer")(sequelize, models);
 
-        models.User.hasMany(models.UserCenter, {foreignKey: 'user_id', as: 'UserCenters'});
+        models.User.belongsTo(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
     }
 };
