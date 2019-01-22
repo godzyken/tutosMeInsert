@@ -31,16 +31,20 @@ const columns = {
 };
 
 module.exports = async (Models) => {
+
+    /* ---- script d'extraction de données  ---- */
+    const {headers, rows} = XlsxExtractor("./BBD Bronze/BBD Bronze/BDD Bronze.xlsx");
+
+    // Parse les données du fichier xlsx
     function saniTize(origin) {
         let pattern = " ",
             re = new RegExp(pattern, "g");
 
         return origin.split(re).join("");
     }
-    /* ---- script d'extraction de données  ---- */
-    const {headers, rows} = XlsxExtractor("./BBD Bronze/BBD Bronze/BDD Bronze.xlsx");
 
-    /* --- injitialise les srepertoires de recherche --- */
+
+    // injitialise les srepertoires de recherche
     let pathFilePicture = 'BBD Bronze/BBD Bronze/Photos';
     let pathFileCV = 'BBD Bronze/BBD Bronze/CV';
 
@@ -65,7 +69,7 @@ module.exports = async (Models) => {
             // Construit le Nom de l'image Utilisateur
             let names = user.first_name + user.last_name;
 
-            let filename = saniTize(names)
+            let filename = saniTize(names);
 
 
             // Parcours le répertoire source d'images

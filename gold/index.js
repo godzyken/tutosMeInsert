@@ -34,6 +34,15 @@ module.exports = async (Models) => {
     // script d'extraction de données
     const {headers, rows} = XlsxExtractor("./BBD gold/BBD gold/BBD Gold.xlsx");
 
+    // Parse les données du fichier xlsx
+    function saniTize(origin) {
+        let pattern = " ",
+            re = new RegExp(pattern, "g");
+
+        return origin.split(re).join("");
+    }
+
+
     // injitialise les repertoires de recherche
     let pathFilePicture = 'BBD gold/BBD gold/Photos/';
     let pathFileCV = 'BBD gold/BBD gold/CV';
@@ -54,26 +63,15 @@ module.exports = async (Models) => {
         trainer.siret = row[headers[columns.siret]];
 
         // trainer.user_id = Models.User.id;
-        console.log(trainer.email)
-        Models.User.findAll({
-                /*where:  {
-                email: trainer.email
-                }*/
-            }).then( e => {
-                console.log("Tadam : \n\n----\n\n", e)
-                console.log("--------------------\nOK User trouvé pour email ", trainer.email)
-            console.log(e)
-            })
+
+
         // Recherche par Nom de fichier
         if (trainer.picture && trainer.picture !== "") {
 
             // Construit le Nom de l'image du formateur
             let names = trainer.first_name + trainer.last_name;
 
-            var pattern = " ",
-                re = new RegExp(pattern, "g");
-
-            let filename = names.split(re).join("");
+            let filename = saniTize(names);
 
 
             // Parcours le répertoire source d'images
@@ -118,16 +116,13 @@ module.exports = async (Models) => {
             // Construit le Nom du CV du formateur
             let names = trainer.first_name + trainer.last_name;
 
-            var pattern = " ",
-                re = new RegExp(pattern, "g");
-
-            let filename = names.split(re).join("");
+            let filename = saniTize(names);
 
             // Parcours le répertoire source de CV
-            let src = path.join(pathFileCV, trainer.nomCv);
+            let src = path.join(pathFileCV, saniTize(trainer.nomCv));
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/formateur/' + filename);
+            let destDir = path.join(__dirname, '/formateur/' + saniTize(filename));
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);
@@ -159,7 +154,7 @@ module.exports = async (Models) => {
             console.log("pas de cv disponible !")
         }
 
-        // sauvegarder chaque User dans la bdd
+        // sauvegarder chaque utilisateur dans la bdd
         await trainer.save();
 
         console.log(trainer.toJSON());
