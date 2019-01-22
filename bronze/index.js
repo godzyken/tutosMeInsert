@@ -40,8 +40,6 @@ module.exports = async (Models) => {
     let pathFileCV = 'BBD Bronze/BBD Bronze/CV';
 
 
-
-
     for (row of rows) {
 
         const user = Models.User.build();
@@ -52,9 +50,9 @@ module.exports = async (Models) => {
         user.ccp = row[headers[columns.ccp]];
         user.ville = row[headers[columns.ville]];
         user.mobile_phone = row[headers[columns.mobile_phone]];
-        user.picture = row[headers[columns.picture]];
-        user.nomCv = row[headers[columns.nomCv]];
-        user.matieres = row[headers[columns.matieres]];
+        user.picture = row[headers[columns.picture] || ""];
+        user.nomCv = row[ headers[columns.nomCv]]
+        user.matieres = row[ headers[columns.matieres]];
 
         // Recherche par Nom de fichier
         if (user.picture && user.picture !== "") {
@@ -92,12 +90,12 @@ module.exports = async (Models) => {
             }
         }
         else {
-            console.log("Erreur pas de photo-profile pour: ")
+            console.log("Erreur pas de photo-profile pour: " + user.first_name)
         }
 
 
         // Recherche par Nom de fichier
-        if (user.nomCv && user.nomCv !== "") {
+        if (user.nomCv && user.nomCv !="") {
 
             // Construit le Nom du CV de l'Utilisateur
             let filename = user.first_name + user.last_name;
@@ -138,7 +136,7 @@ module.exports = async (Models) => {
         }
 
         // sauvegarder chaque User dans la bdd
-        // await user.save();
+        await user.save();
 
         console.log(user.toJSON());
     }

@@ -57,10 +57,10 @@ module.exports = (sequelize, models) => {
                 type: DataTypes.ENUM('waiting', 'active', 'deleted'),
                 allowNull: true
             },
-            lastlongin_at: {
+           /* lastlongin_at: {
                 type: DataTypes.DATE,
                 allowNull: true
-            },
+            },*/
             remember_token: {
                 type: DataTypes.TEXT,
                 allowNull: true
@@ -69,14 +69,14 @@ module.exports = (sequelize, models) => {
                 type: DataTypes.INTEGER,
                 allowNull: true
             },
-            createdAt: {
+            /*createdAt: {
                 allowNull: true,
                 type: DataTypes.DATE
             },
             updatedAt: {
                 allowNull: true,
                 type: DataTypes.DATE
-            }
+            }*/
         };
 
         models.User = sequelize.define('User', schema, {
@@ -87,8 +87,8 @@ module.exports = (sequelize, models) => {
             tableName: 'user'
         });
 
-        require("./Trainer")(sequelize, models);
-
-        models.User.belongsTo(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
+        // require("./Trainer")(sequelize, models);
+        //
+        // models.User.belongsTo(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
     }
 };
