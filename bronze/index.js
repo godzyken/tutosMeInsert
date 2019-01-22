@@ -31,15 +31,18 @@ const columns = {
 };
 
 module.exports = async (Models) => {
+    function saniTize(origin) {
+        let pattern = " ",
+            re = new RegExp(pattern, "g");
 
+        return origin.split(re).join("");
+    }
     /* ---- script d'extraction de données  ---- */
     const {headers, rows} = XlsxExtractor("./BBD Bronze/BBD Bronze/BDD Bronze.xlsx");
 
     /* --- injitialise les srepertoires de recherche --- */
     let pathFilePicture = 'BBD Bronze/BBD Bronze/Photos';
     let pathFileCV = 'BBD Bronze/BBD Bronze/CV';
-
-
 
 
     for (row of rows) {
@@ -52,15 +55,18 @@ module.exports = async (Models) => {
         user.ccp = row[headers[columns.ccp]];
         user.ville = row[headers[columns.ville]];
         user.mobile_phone = row[headers[columns.mobile_phone]];
-        user.picture = row[headers[columns.picture]];
-        user.nomCv = row[headers[columns.nomCv]];
+        user.picture = row[headers[columns.picture] || ""];
+        user.nomCv = row[headers[columns.nomCv]]
         user.matieres = row[headers[columns.matieres]];
 
         // Recherche par Nom de fichier
         if (user.picture && user.picture !== "") {
 
             // Construit le Nom de l'image Utilisateur
-            let filename = [user.first_name] + [user.last_name];
+            let names = user.first_name + user.last_name;
+
+            let filename = saniTize(names)
+
 
             // Parcours le répertoire source d'images
             let src = path.join(pathFilePicture, user.picture);
@@ -92,21 +98,29 @@ module.exports = async (Models) => {
             }
         }
         else {
-            console.log("Erreur pas de photo-profile pour: ")
+            console.log("Erreur pas de photo-profile pour: " + user.first_name)
         }
 
 
         // Recherche par Nom de fichier
-        if (user.nomCv && user.nomCv !== "") {
+        if (user.nomCv && user.nomCv != "") {
 
             // Construit le Nom du CV de l'Utilisateur
-            let filename = user.first_name + user.last_name;
+            let names = user.first_name + user.last_name;
+
+
+            let filename = saniTize(names);
 
             // Parcours le répertoire source de CV
-            let src = path.join(pathFileCV, user.nomCv);
+            let src = path.join(pathFileCV, saniTize(user.nomCv));
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/client/' + filename);
+            let destDir = path.join(__dirname, '/client/' + saniTize(filename));
+
+            console.log('------------');
+            console.log(destDir);
+            console.log('------------');
+
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);
@@ -115,7 +129,8 @@ module.exports = async (Models) => {
                 copyFile(src, path.join(destDir, filename + '.pdf'));
             });
 
-            // Copie l'image dans le répertoire destinataire
+
+            // Copie le cv dans le répertoire destinataire
             function copyFile(src, dest) {
 
                 let readStream = fs.createReadStream(src);
@@ -137,12 +152,17 @@ module.exports = async (Models) => {
             console.log("pas de cv pour : ")
         }
 
+
         // sauvegarder chaque User dans la bdd
-        // await user.save();
+        await user.save();
 
         console.log(user.toJSON());
+        console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
     }
 
 
     return rows;
 };
+
+
+

@@ -24,7 +24,7 @@ const columns = {
     ville: 5,
     mobile_phone: 6,
     picture: 7,
-    monCv: 8,
+    nomCV: 8,
     matieres: 9,
     siret: 10
 };
@@ -38,7 +38,6 @@ module.exports = async (Models) => {
     let pathFilePicture = 'BBD gold/BBD gold/Photos/';
     let pathFileCV = 'BBD gold/BBD gold/CV';
 
-
     for (row of rows) {
 
         const trainer = Models.Trainer.build();
@@ -50,17 +49,32 @@ module.exports = async (Models) => {
         trainer.ville = row[headers[columns.ville]];
         trainer.mobile_phone = row[headers[columns.mobile_phone]];
         trainer.picture = row[headers[columns.picture]] || "";
-        trainer.monCv = row[headers[columns.monCv]];
+        trainer.nomCv = row[headers[columns.nomCV]];
         trainer.matieres = row[headers[columns.matieres]];
         trainer.siret = row[headers[columns.siret]];
 
-        trainer.user_id = Models.User.id;
-
+        // trainer.user_id = Models.User.id;
+        console.log(trainer.email)
+        Models.User.findAll({
+                /*where:  {
+                email: trainer.email
+                }*/
+            }).then( e => {
+                console.log("Tadam : \n\n----\n\n", e)
+                console.log("--------------------\nOK User trouvé pour email ", trainer.email)
+            console.log(e)
+            })
         // Recherche par Nom de fichier
         if (trainer.picture && trainer.picture !== "") {
 
-            // Construit le Nom de l'image Utilisateur
-            let filename = trainer.first_name + trainer.last_name;
+            // Construit le Nom de l'image du formateur
+            let names = trainer.first_name + trainer.last_name;
+
+            var pattern = " ",
+                re = new RegExp(pattern, "g");
+
+            let filename = names.split(re).join("");
+
 
             // Parcours le répertoire source d'images
             let src = path.join(pathFilePicture, trainer.picture);
@@ -95,15 +109,19 @@ module.exports = async (Models) => {
 
         }
         else {
-            console.log("pas d'image pour : ", trainer.first_name)
+            console.log("Erreur pas de photo-profile pour: ", trainer.first_name)
         }
 
-
         // Recherche par Nom de fichier
-        if (trainer.nomCv && trainer.nomCv !== "") {
+        if (trainer.nomCv && trainer.nomCv !="") {
 
-            // Construit le Nom du CV de l'Utilisateur
-            let filename = trainer.first_name + trainer.last_name;
+            // Construit le Nom du CV du formateur
+            let names = trainer.first_name + trainer.last_name;
+
+            var pattern = " ",
+                re = new RegExp(pattern, "g");
+
+            let filename = names.split(re).join("");
 
             // Parcours le répertoire source de CV
             let src = path.join(pathFileCV, trainer.nomCv);
@@ -142,7 +160,7 @@ module.exports = async (Models) => {
         }
 
         // sauvegarder chaque User dans la bdd
-        // await trainer.save();
+        await trainer.save();
 
         console.log(trainer.toJSON());
     }
