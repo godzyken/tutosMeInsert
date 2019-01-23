@@ -43,6 +43,23 @@ module.exports = async (Models) => {
         return origin.split(re).join("");
     }
 
+    // Encripte les données utilisateur
+    function base64data(data) {
+        let buff = new Buffer(data);
+        let base64data = buff.toString('base64');
+
+        return data.split(base64data).join("");
+    }
+
+    // Creer le lien de la photo orofile
+    function createUrl(picture) {
+        let Url = ('https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/trainer/');
+
+        let ext = '.jpeg';
+
+        return Url.split(Url + picture + ext);
+    }
+
 
     // injitialise les srepertoires de recherche
     let pathFilePicture = 'BBD Bronze/BBD Bronze/Photos';
@@ -68,8 +85,8 @@ module.exports = async (Models) => {
             // Construit le Nom de l'image Utilisateur
             let names = user.first_name + user.last_name;
 
+            // formatage du nom utilisateur
             let filename = saniTize(names);
-
 
             // Parcours le répertoire source d'images
             let src = path.join(pathFilePicture, user.picture);
@@ -99,6 +116,14 @@ module.exports = async (Models) => {
 
                 readStream.pipe(fs.createWriteStream(dest));
             }
+
+            // construit l'url de la photo a sauvegarder
+            user.picture = createUrl(base64data(filename));
+
+            console.log('------------------------');
+            console.log(user.picture);
+            console.log('-------------------------');
+
         }
         else {
             console.log("Erreur pas de photo-profile pour: " + user.first_name)
@@ -156,7 +181,7 @@ module.exports = async (Models) => {
 
 
         // sauvegarder chaque User dans la bdd
-        await user.save();
+        // await user.save();
 
         console.log(user.toJSON());
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
@@ -165,7 +190,3 @@ module.exports = async (Models) => {
 
     return rows;
 };
-
-
-
-//https://www.supinfo.com/articles/single/2420--nodejs-sequelize-orm-persistance-donnees
