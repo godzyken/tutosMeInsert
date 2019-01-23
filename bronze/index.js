@@ -1,6 +1,7 @@
 const XlsxExtractor = require('../utils/xlsxExtractor');
 const fs = require('fs');
 const path = require('path');
+const checksum = require('checksum');
 
 
 /* -------------------------------------------------- */
@@ -35,7 +36,7 @@ module.exports = async (Models) => {
     /* ---- script d'extraction de données  ---- */
     const {headers, rows} = XlsxExtractor("./BBD Bronze/BBD Bronze/BDD Bronze.xlsx");
 
-    // Parse les données du fichier xlsx
+    // Parse les données nom, prenom du fichier xlsx
     function saniTize(origin) {
         let pattern = " ",
             re = new RegExp(pattern, "g");
@@ -43,41 +44,33 @@ module.exports = async (Models) => {
         return origin.split(re).join("");
     }
 
-    // Encripte les données utilisateur
-    function base64data(data) {
-        let buff = new Buffer(data);
-        let base64data = buff.toString('base64');
-
-        return data.split(base64data).join("");
-    }
-
-    // Creer le lien de la photo orofile
-    function createUrl(picture) {
-        let Url = ('https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/trainer/');
-
+    // Creer le lien URL de la photo-profile
+    function createUrl(index, data) {
+        let urlbase = ('https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/user/'); // TODO make it Global Variable
+        let pathPics = index + "_" + checksum(data);
         let ext = '.jpeg';
+        let Uri = path.join(urlbase, pathPics + ext);
 
-        return Url.split(Url + picture + ext);
+        return Uri;
     }
-
 
     // injitialise les srepertoires de recherche
     let pathFilePicture = 'BBD Bronze/BBD Bronze/Photos';
     let pathFileCV = 'BBD Bronze/BBD Bronze/CV';
 
-    for (row of rows) {
+    for (let index = 0; index < rows.length; index++) {
 
         const user = Models.User.build();
-        user.email = row[headers[columns.email]];
-        user.first_name = row[headers[columns.first_name]];
-        user.last_name = row[headers[columns.last_name]];
-        user.address = row[headers[columns.address]];
-        user.ccp = row[headers[columns.ccp]];
-        user.ville = row[headers[columns.ville]];
-        user.mobile_phone = row[headers[columns.mobile_phone]];
-        user.picture = row[headers[columns.picture] || ""];
-        user.nomCv = row[headers[columns.nomCv]];
-        user.matieres = row[headers[columns.matieres]];
+        user.email = rows[index][headers[columns.email]];
+        user.first_name = rows[index][headers[columns.first_name]];
+        user.last_name = rows[index][headers[columns.last_name]];
+        user.address = rows[index][headers[columns.address]];
+        user.ccp = rows[index][headers[columns.ccp]];
+        user.ville = rows[index][headers[columns.ville]];
+        user.mobile_phone = rows[index][headers[columns.mobile_phone]];
+        user.picture = rows[index][headers[columns.picture] || ""];
+        user.nomCv = rows[index][headers[columns.nomCv]];
+        user.matieres = rows[index][headers[columns.matieres]];
 
         // Recherche par Nom de fichier
         if (user.picture && user.picture !== "") {
@@ -88,11 +81,15 @@ module.exports = async (Models) => {
             // formatage du nom utilisateur
             let filename = saniTize(names);
 
+            // Construit l'url de la photo a sauvegarder
+            let url = createUrl(index, filename);
+
             // Parcours le répertoire source d'images
             let src = path.join(pathFilePicture, user.picture);
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/client/' + saniTize(filename));
+            let destDir = path.join(__dirname, '/client/' + filename);
+
             fs.access(destDir, (err) => {
                 if (err)
                     fs.mkdirSync(destDir);
@@ -109,20 +106,21 @@ module.exports = async (Models) => {
                 });
 
                 readStream.once('end', () => {
-                    console.log('copy éffectuer le client: ' + filename);
+
+                    console.log('------go---------go---------go---------------');
+                    console.log('copy ok pour le client:' + filename);
                     console.log("Src : ", src);
-                    console.log("Dest : ", dest)
+                    console.log("Dest : ", dest);
+                    console.log("Url : ", url);
+                    console.log('------ok---------ok---------ok---------------');
                 });
 
                 readStream.pipe(fs.createWriteStream(dest));
             }
 
-            // construit l'url de la photo a sauvegarder
-            user.picture = createUrl(base64data(filename));
+            user.picture = createUrl(index, url);
 
-            console.log('------------------------');
-            console.log(user.picture);
-            console.log('-------------------------');
+            return user.picture.save();
 
         }
         else {
@@ -181,7 +179,7 @@ module.exports = async (Models) => {
 
 
         // sauvegarder chaque User dans la bdd
-        // await user.save();
+        await user.save();
 
         console.log(user.toJSON());
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
