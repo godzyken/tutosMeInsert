@@ -59,7 +59,7 @@ module.exports = async (Models) => {
         user.ville = row[headers[columns.ville]];
         user.mobile_phone = row[headers[columns.mobile_phone]];
         user.picture = row[headers[columns.picture] || ""];
-        user.nomCv = row[headers[columns.nomCv]]
+        user.nomCv = row[headers[columns.nomCv]];
         user.matieres = row[headers[columns.matieres]];
 
         // Recherche par Nom de fichier
@@ -168,3 +168,4 @@ module.exports = async (Models) => {
 
 
 
+//https://www.supinfo.com/articles/single/2420--nodejs-sequelize-orm-persistance-donnees
