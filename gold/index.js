@@ -68,14 +68,14 @@ module.exports = async (Models) => {
         user.zip = rows[index][headers[columns.zip]];
         user.ville = rows[index][headers[columns.ville]];
         user.mobile_phone = rows[index][headers[columns.mobile_phone]];
-        user.picture = rows[index][headers[columns.picture]] || "";
+        user.picture = rows[index][headers[columns.picture]];
         user.nomCv = rows[index][headers[columns.nomCV]];
         user.matieres = rows[index][headers[columns.matieres]];
         user.siret = rows[index][headers[columns.siret]];
 
 
         // Recherche par Nom de fichier
-        if (user.picture && user.picture !== "") {
+        if (user.picture && user.picture != "") {
 
             // Construit le Nom de l'image de l'utilisateur
             let names = user.first_name + user.last_name;
@@ -170,18 +170,19 @@ module.exports = async (Models) => {
                 readStream.pipe(fs.createWriteStream(dest));
             }
 
+
         }
         else {
             console.log("pas de cv disponible !");
         }
 
+        // await user.save().then(_user => {
+        user.save().then(_user => {
 
-        console.log(user.toJSON());
-
-        return user.save().then(_user => {
             var trainer = new Models.Trainer();
 
             trainer.user_id = _user.id;
+            trainer.picture = user.picture;
             //save user
             trainer.email = user.email;
             trainer.level = user.level;
@@ -202,10 +203,6 @@ module.exports = async (Models) => {
             trainer.permis = user.permis;
             trainer.skills_json = user.skills_json;
 
-            console.log('---------');
-            console.log(trainer.toJSON());
-            console.log('---------');
-
             return trainer.save().then(_trainer => {
                 var skills = new Models.Skills();
 
@@ -214,19 +211,33 @@ module.exports = async (Models) => {
                 skills.name = user.matieres;
 
 
+
+                console.log('---------');
+                console.log(trainer.toJSON());
+                console.log('---------');
                 console.log('---------');
                 console.log(skills.toJSON());
                 console.log('---------');
 
-                return skills.save(
-                    skills.user_id = trainer.id,
-                    skills.name = user.matieres
-                );
+                // return skills.save(
+                //     skills.user_id = trainer.id,
+                //     skills.name = user.matieres
+                // );
+
+                return skills;
 
             });
+
+
         });
 
+        console.log('---------');
+        console.log(user.toJSON());
+        console.log('---------');
 
+        process.exit();
+
+        console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
     }
 
 

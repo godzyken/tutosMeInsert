@@ -68,7 +68,7 @@ module.exports = async (Models) => {
         user.zip = rows[index][headers[columns.zip]];
         user.ville = rows[index][headers[columns.ville]];
         user.mobile_phone = rows[index][headers[columns.mobile_phone]];
-        user.picture = rows[index][headers[columns.picture] || ""];
+        user.picture = rows[index][headers[columns.picture]];
         user.nomCv = rows[index][headers[columns.nomCv]];
         user.matieres = rows[index][headers[columns.matieres]];
 
@@ -118,9 +118,9 @@ module.exports = async (Models) => {
                 readStream.pipe(fs.createWriteStream(dest));
             }
 
-            user.picture = createUrl(index, url);
+            user.picture = url;
 
-            return user.picture.save();
+            return user.picture;
 
         }
         else {
@@ -165,7 +165,7 @@ module.exports = async (Models) => {
                 });
 
                 readStream.once('end', () => {
-                    console.log('copy ok pour :');
+                    console.log('copy ok pour: ' + filename);
                     console.log("Src : ", src);
                     console.log("Dest : ", dest)
                 });
@@ -179,7 +179,11 @@ module.exports = async (Models) => {
 
 
         // sauvegarder chaque User dans la bdd
-        await user.save();
+        // await user.save();
+
+        await  user.save();
+
+        process.exit();
 
         console.log(user.toJSON());
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
