@@ -23,7 +23,7 @@ const columns = {
     first_name: 1,
     last_name: 2,
     address: 3,
-    ccp: 4,
+    zip: 4,
     ville: 5,
     mobile_phone: 6,
     picture: 7,
@@ -51,7 +51,6 @@ module.exports = async (Models) => {
         let pathPics = index + "_" + checksum(data);
         let ext = '.jpeg';
         let Uri = path.join(urlbase, pathPics + ext);
-
         return Uri;
     }
 
@@ -59,28 +58,27 @@ module.exports = async (Models) => {
     let pathFilePicture = 'BBD gold/BBD gold/Photos/';  // TODO make it Global Variable
     let pathFileCV = 'BBD gold/BBD gold/CV';            // TODO make it Global Variable
 
-
     for (let index = 0; index < rows.length; index++) {
 
-        const trainer = Models.Trainer.build();
-        trainer.email = rows[index][headers[columns.email]];
-        trainer.first_name = rows[index][headers[columns.first_name]];
-        trainer.last_name = rows[index][headers[columns.last_name]];
-        trainer.address = rows[index][headers[columns.address]];
-        trainer.ccp = rows[index][headers[columns.ccp]];
-        trainer.ville = rows[index][headers[columns.ville]];
-        trainer.mobile_phone = rows[index][headers[columns.mobile_phone]];
-        trainer.picture = rows[index][headers[columns.picture]] || "";
-        trainer.nomCv = rows[index][headers[columns.nomCV]];
-        trainer.matieres = rows[index][headers[columns.matieres]];
-        trainer.siret = rows[index][headers[columns.siret]];
+        const user = Models.User.build();
+        user.email = rows[index][headers[columns.email]];
+        user.first_name = rows[index][headers[columns.first_name]];
+        user.last_name = rows[index][headers[columns.last_name]];
+        user.address = rows[index][headers[columns.address]];
+        user.zip = rows[index][headers[columns.zip]];
+        user.ville = rows[index][headers[columns.ville]];
+        user.mobile_phone = rows[index][headers[columns.mobile_phone]];
+        user.picture = rows[index][headers[columns.picture]] || "";
+        user.nomCv = rows[index][headers[columns.nomCV]];
+        user.matieres = rows[index][headers[columns.matieres]];
+        user.siret = rows[index][headers[columns.siret]];
 
 
         // Recherche par Nom de fichier
-        if (trainer.picture && trainer.picture !== "") {
+        if (user.picture && user.picture !== "") {
 
             // Construit le Nom de l'image de l'utilisateur
-            let names = trainer.first_name + trainer.last_name;
+            let names = user.first_name + user.last_name;
 
             // Formate le nom de l'image
             let filename = saniTize(names);
@@ -89,7 +87,7 @@ module.exports = async (Models) => {
             let url = createUrl(index, filename);
 
             // Parcours le répertoire source d'images
-            let src = path.join(pathFilePicture, trainer.picture);
+            let src = path.join(pathFilePicture, user.picture);
 
             // Construit le nom du repertoire destinataire
             let destDir = path.join(__dirname, '/formateur/' + filename);
@@ -99,7 +97,7 @@ module.exports = async (Models) => {
                     console.log(err);
                     fs.mkdirSync(destDir);
                 }
-                copyFile(src, path.join(destDir, filename + '.png'));
+                user.picture = copyFile(src, path.join(destDir, filename + '.png'));
             });
 
 
@@ -125,121 +123,110 @@ module.exports = async (Models) => {
                 readStream.pipe(fs.createWriteStream(dest));
             }
 
-            trainer.picture = createUrl(index, url);
+            user.picture = url;
 
-            return trainer.picture.push();
+            return user.picture;
         }
         else {
-            console.log("Erreur pas de photo-profile pour: ", trainer.first_name)
+            console.log("Erreur pas de photo-profile pour: ", user.first_name)
         }
 
-        // // Recherche par Nom de fichier
-        // if (trainer.nomCv && trainer.nomCv !="") {
-        //
-        //     // Construit le Nom du CV du formateur
-        //     let names = trainer.first_name + trainer.last_name;
-        //
-        //     let filename = saniTize(names);
-        //
-        //     // Parcours le répertoire source de CV
-        //     let src = path.join(pathFileCV, saniTize(trainer.nomCv));
-        //
-        //     // Construit le nom du repertoire destinataire
-        //     let destDir = path.join(__dirname, '/formateur/' + saniTize(filename));
-        //     fs.access(destDir, (err) => {
-        //         if (err) {
-        //             console.log(err);
-        //             fs.mkdirSync(destDir);
-        //         }
-        //         copyFile(src, path.join(destDir, filename + '.pdf'));
-        //     });
-        //
-        //     // Copie l'image dans le répertoire destinataire
-        //     function copyFile(src, dest) {
-        //
-        //         let readStream = fs.createReadStream(src);
-        //
-        //         readStream.once('error', (err) => {
-        //             console.log(err);
-        //         });
-        //
-        //         readStream.once('end', () => {
-        //             console.log('copy ok pour :');
-        //             console.log("Src : ", src);
-        //             console.log("Dest : ", dest)
-        //         });
-        //
-        //         readStream.pipe(fs.createWriteStream(dest));
-        //     }
-        //
-        // }
-        // else {
-        //     console.log("pas de cv disponible !")
-        // }
+        // Recherche par Nom de fichier
+        if (user.nomCv && user.nomCv != "") {
 
-        var user_id = 0
-        var user = new Models.User();
-        user.save([
-            user.email = rows[index][headers[columns.email]],
-            user.first_name = rows[index][headers[columns.first_name]],
-            user.last_name = rows[index][headers[columns.last_name]],
-            user.address = rows[index][headers[columns.address]],
-            user.latitude = rows[index][headers[columns.latitude]],
-            user.longitude = rows[index][headers[columns.longitude]],
-            user.mobile_phone = rows[index][headers[columns.mobile_phone]],
-            user.phone_number = rows[index][headers[columns.phone_number]],
-            user.password = rows[index][headers[columns.password]],
-            user.picture = rows[index][headers[columns.picture]],
-            user.type = rows[index][headers[columns.type]],
-            user.status = rows[index][headers[columns.status]],
-            user.remember_token = rows[index][headers[columns.remember_token]],
-            user.role_id = rows[index][headers[columns.role_id]],
+            // Construit le Nom du CV du formateur
+            let names = user.first_name + user.last_name;
 
-        ]).then(param => {
-            user_id = param.id
-            console.log(param.id);
-            trainer.user_id = user_id
-            //REMPLIR LES CHAMPS TRAINERS
-            return trainer.save();
-        }).then(users => {
-            console.log(users) // ... in order to get the array of user objects
+            let filename = saniTize(names);
+
+            // Parcours le répertoire source de CV
+            let src = path.join(pathFileCV, saniTize(user.nomCv));
+
+            // Construit le nom du repertoire destinataire
+            let destDir = path.join(__dirname, '/formateur/' + saniTize(filename));
+            fs.access(destDir, (err) => {
+                if (err) {
+                    console.log(err);
+                    fs.mkdirSync(destDir);
+                }
+                copyFile(src, path.join(destDir, filename + '.pdf'));
+            });
+
+            // Copie l'image dans le répertoire destinataire
+            function copyFile(src, dest) {
+
+                let readStream = fs.createReadStream(src);
+
+                readStream.once('error', (err) => {
+                    console.log(err);
+                });
+
+                readStream.once('end', () => {
+                    console.log('copy ok pour :');
+                    console.log("Src : ", src);
+                    console.log("Dest : ", dest)
+                });
+
+                readStream.pipe(fs.createWriteStream(dest));
+            }
+
+        }
+        else {
+            console.log("pas de cv disponible !");
+        }
+
+
+        console.log(user.toJSON());
+
+        return user.save().then(_user => {
+            var trainer = new Models.Trainer();
+
+            trainer.user_id = _user.id;
+            //save user
+            trainer.email = user.email;
+            trainer.level = user.level;
+            trainer.hourly_rate = user.hourly_rate;
+            trainer.resume = user.nomCv;
+            trainer.rib = user.rib;
+            trainer.rib_file = user.rib_file;
+            trainer.contract = user.contract;
+            trainer.id_card = user.id_card;
+            trainer.health_card = user.health_card;
+            trainer.medecine_proof = user.medecine_proof;
+            trainer.siren = user.siren;
+            trainer.siren_file = user.siren_file;
+            trainer.attestation_urssaf = user.attestation_urssaf;
+            trainer.siren_waiting = user.siren_waiting;
+            trainer.freelancer = user.freelancer;
+            trainer.in_training = user.in_training;
+            trainer.permis = user.permis;
+            trainer.skills_json = user.skills_json;
+
+            console.log('---------');
+            console.log(trainer.toJSON());
+            console.log('---------');
+
+            return trainer.save().then(_trainer => {
+                var skills = new Models.Skills();
+
+                skills.user_id = _trainer.id;
+
+                skills.name = user.matieres;
+
+
+                console.log('---------');
+                console.log(skills.toJSON());
+                console.log('---------');
+
+                return skills.save(
+                    skills.user_id = trainer.id,
+                    skills.name = user.matieres
+                );
+
+            });
         });
 
 
-        trainer.user_id = user.id;
-
-
-        console.log('----------');
-        console.log(user.id);
-        console.log('---------');
-
-        //remplir les champs users
-        // user.email = rows[index][headers[columns.email]];
-        // user.first_name = rows[index][headers[columns.first_name]];
-        // user.last_name = rows[index][headers[columns.last_name]];
-        // user.address = rows[index][headers[columns.address]];
-        // user.latitude = rows[index][headers[columns.latitude]];
-        // user.longitude = rows[index][headers[columns.longitude]];
-        // user.mobile_phone = rows[index][headers[columns.mobile_phone]];
-        // user.phone_number = rows[index][headers[columns.phone_number]];
-        // user.password = rows[index][headers[columns.password]];
-        // user.picture = rows[index][headers[columns.picture]];
-        // user.type = rows[index][headers[columns.type]];
-        // user.status = rows[index][headers[columns.status]];
-        // user.remember_token = rows[index][headers[columns.remember_token]];
-        // user.role_id = rows[index][headers[columns.role_id]];
-
-        //sauvegarder l'user en bdd et le récup
-        // await user.save();
-
-        // //créer un objet trainer, avec les infos nécéssaires + id de l'user crée
-        // Models.trainer = new user.save((trainer) => {
-        //
-        //     // sauvegarder chaque utilisateur dans la bdd
-        //     trainer.save();
-        // });
-
-        console.log(trainer.toJSON());
     }
 
 

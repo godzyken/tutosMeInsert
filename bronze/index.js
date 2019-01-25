@@ -23,7 +23,7 @@ const columns = {
     first_name: 1,
     last_name: 2,
     address: 3,
-    ccp: 4,
+    zip: 4,
     ville: 5,
     mobile_phone: 6,
     picture: 7,
@@ -65,7 +65,7 @@ module.exports = async (Models) => {
         user.first_name = rows[index][headers[columns.first_name]];
         user.last_name = rows[index][headers[columns.last_name]];
         user.address = rows[index][headers[columns.address]];
-        user.ccp = rows[index][headers[columns.ccp]];
+        user.zip = rows[index][headers[columns.zip]];
         user.ville = rows[index][headers[columns.ville]];
         user.mobile_phone = rows[index][headers[columns.mobile_phone]];
         user.picture = rows[index][headers[columns.picture] || ""];

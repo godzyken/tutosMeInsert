@@ -17,6 +17,10 @@ module.exports = (sequelize, models) => {
                 type: DataTypes.TEXT,
                 allowNull: true
             },
+            added_by: {
+                type: DataTypes.INTEGER,
+                allowNull: true
+            },
             comment: {
                 type: DataTypes.STRING,
                 allowNull: true
@@ -25,14 +29,7 @@ module.exports = (sequelize, models) => {
                 type: DataTypes.ENUM('waiting', 'valid', 'deleted'),
                 allowNull: true
             },
-            createdAt: {
-                allowNull: true,
-                type: DataTypes.DATE
-            },
-            updatedAt: {
-                allowNull: true,
-                type: DataTypes.DATE
-            }
+
         };
 
         models.Skills = sequelize.define('Skills', schema, {
@@ -43,8 +40,6 @@ module.exports = (sequelize, models) => {
             tableName: 'skills'
         });
 
-        require("./Trainer")(sequelize,models);
-
-        models.Skills.hasMany(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
     }
+
 };

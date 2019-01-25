@@ -11,7 +11,7 @@ const columns = {
     first_name: 1,
     last_name: 2,
     address: 3,
-    ccp: 4,
+    zip: 4,
     ville: 5,
     mobile_phone: 6,
     picture: 7,
@@ -20,7 +20,7 @@ const columns = {
 };
 
 module.exports = async (Models) => {
-    const {headers, rows} = XlsxExtractor("BBD Bronze/BBD Bronze/BDD Bronze insert.xlsx");
+    const {headers, rows} = XlsxExtractor("BBD Bronze/BBD Bronze/BDD Bronze.xlsx");
     const CVs = FinderCV("BBD Bronze/BBD Bronze/CV");
     const blobpics = FinderPics("BBD Bronze/BBD Bronze/Photos");
 
@@ -33,7 +33,7 @@ module.exports = async (Models) => {
         user.first_name = row[headers[columns.first_name]];
         user.last_name = row[headers[columns.last_name]];
         user.address = row[headers[columns.address]];
-        user.ccp = row[headers[columns.ccp]];
+        user.zip = row[headers[columns.zip]];
         user.ville = row[headers[columns.ville]];
         user.mobile_phone = row[headers[columns.mobile_phone]];
         user.picture = row[headers[columns.picture]];

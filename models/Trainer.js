@@ -22,7 +22,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             resume: {
-                type: DataTypes.TEXT,
+                type: DataTypes.BLOB,
                 allowNull: true
             },
             rib: {
@@ -99,10 +99,7 @@ module.exports = (sequelize, models) => {
             tableName: 'trainer'
         });
 
-        // sequelize.sync({
-        //
-        // });
-        // models.Trainer.belongsTo(models.User, {foreignKey: 'user_id', as: 'Users'});
+        models.Trainer.hasMany(models.Skills);
 
     }
 };
