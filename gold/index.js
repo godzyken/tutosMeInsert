@@ -17,6 +17,21 @@ const checksum = require('checksum');
 /* -------------------------------------------------- */
 
 
+
+
+/* -------------------------------------------------- */
+const trainerDirInt = '2019-01-11- Arborescence Dropbox/Interne/Formateurs';
+/* -------------------------------------------------- */
+// const clientDir = '2019-01-11- Arborescence Dropbox/Interne/Clients';
+/* -------------------------------------------------- */
+const photoSrc = 'BBD gold/BBD gold/Photos';
+
+/* -------------------------------------------------- */
+const preUrl = 'https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/trainer/';
+
+/* -------------------------------------------------- */
+
+
 // Initialise le tableau de champs de données.
 const columns = {
     email: 0,
@@ -47,7 +62,7 @@ module.exports = async (Models) => {
 
     // Creer le lien URL de la photo-profile
     function createUrl(index, data) {
-        let urlbase = ('https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/trainer/'); // TODO make it Global Variable
+        let urlbase = (preUrl);
         let pathPics = index + "_" + checksum(data);
         let ext = '.jpeg';
         let Uri = path.join(urlbase, pathPics + ext);
@@ -55,7 +70,7 @@ module.exports = async (Models) => {
     }
 
     // injitialise les repertoires de recherche
-    let pathFilePicture = 'BBD gold/BBD gold/Photos/';  // TODO make it Global Variable
+    // let pathFilePicture = 'BBD gold/BBD gold/Photos/';  // TODO make it Global Variable
     let pathFileCV = 'BBD gold/BBD gold/CV';            // TODO make it Global Variable
 
     for (let index = 0; index < rows.length; index++) {
@@ -87,10 +102,10 @@ module.exports = async (Models) => {
             let url = createUrl(index, filename);
 
             // Parcours le répertoire source d'images
-            let src = path.join(pathFilePicture, user.picture);
+            let src = path.join(photoSrc, user.picture);
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/formateur/' + filename);
+            let destDir = path.join(__dirname, trainerDirInt + filename);
 
             fs.access(destDir, (err) => {
                 if (err) {
@@ -123,12 +138,16 @@ module.exports = async (Models) => {
                 readStream.pipe(fs.createWriteStream(dest));
             }
 
-            user.picture = url;
+
+            console.log('--------------');
+            console.log('#################');
+            console.log(user.picture);
+            console.log('-------------');
 
             return user.picture;
         }
         else {
-            console.log("Erreur pas de photo-profile pour: ", user.first_name)
+            console.log("pas de photo-profile pour: ", user.first_name)
         }
 
         // Recherche par Nom de fichier
@@ -143,7 +162,7 @@ module.exports = async (Models) => {
             let src = path.join(pathFileCV, saniTize(user.nomCv));
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/formateur/' + saniTize(filename));
+            let destDir = path.join(__dirname, trainerDir + saniTize(filename));
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);
@@ -223,9 +242,9 @@ module.exports = async (Models) => {
                 //     skills.user_id = trainer.id,
                 //     skills.name = user.matieres
                 // );
+                process.exit();
 
                 return skills;
-
             });
 
 
@@ -235,7 +254,7 @@ module.exports = async (Models) => {
         console.log(user.toJSON());
         console.log('---------');
 
-        process.exit();
+
 
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
     }
