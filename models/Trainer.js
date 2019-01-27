@@ -99,10 +99,5 @@ module.exports = (sequelize, models) => {
             tableName: 'trainer'
         });
 
-        // sequelize.sync({
-        //
-        // });
-        // models.Trainer.belongsTo(models.User, {foreignKey: 'user_id', as: 'Users'});
-
     }
 };

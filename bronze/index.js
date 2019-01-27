@@ -23,7 +23,7 @@ const columns = {
     first_name: 1,
     last_name: 2,
     address: 3,
-    ccp: 4,
+    zip: 4,
     ville: 5,
     mobile_phone: 6,
     picture: 7,
@@ -49,9 +49,7 @@ module.exports = async (Models) => {
         let urlbase = ('https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/user/'); // TODO make it Global Variable
         let pathPics = index + "_" + checksum(data);
         let ext = '.jpeg';
-        let Uri = path.join(urlbase, pathPics + ext);
-
-        return Uri;
+        return Uri = path.join(urlbase, pathPics + ext);
     }
 
     // injitialise les srepertoires de recherche
@@ -65,7 +63,7 @@ module.exports = async (Models) => {
         user.first_name = rows[index][headers[columns.first_name]];
         user.last_name = rows[index][headers[columns.last_name]];
         user.address = rows[index][headers[columns.address]];
-        user.ccp = rows[index][headers[columns.ccp]];
+        user.zip = rows[index][headers[columns.zip]];
         user.ville = rows[index][headers[columns.ville]];
         user.mobile_phone = rows[index][headers[columns.mobile_phone]];
         user.picture = rows[index][headers[columns.picture] || ""];
@@ -118,9 +116,9 @@ module.exports = async (Models) => {
                 readStream.pipe(fs.createWriteStream(dest));
             }
 
-            user.picture = createUrl(index, url);
+            user.picture = url;
 
-            return user.picture.save();
+            return user.picture;
 
         }
         else {
@@ -141,11 +139,6 @@ module.exports = async (Models) => {
 
             // Construit le nom du repertoire destinataire
             let destDir = path.join(__dirname, '/client/' + saniTize(filename));
-
-            console.log('------------');
-            console.log(destDir);
-            console.log('------------');
-
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);
@@ -153,7 +146,6 @@ module.exports = async (Models) => {
                 }
                 copyFile(src, path.join(destDir, filename + '.pdf'));
             });
-
 
             // Copie le cv dans le répertoire destinataire
             function copyFile(src, dest) {
@@ -179,7 +171,7 @@ module.exports = async (Models) => {
 
 
         // sauvegarder chaque User dans la bdd
-        await user.save();
+        // await user.save();
 
         console.log(user.toJSON());
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
