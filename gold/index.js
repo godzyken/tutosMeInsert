@@ -2,6 +2,14 @@ const XlsxExtractor = require('../utils/xlsxExtractor');
 const fs = require('fs');
 const path = require('path');
 const checksum = require('checksum');
+// const dir = fs.mkdirSync('back office/formateur/');
+const dir = fs.mkdir('../back office/formateur/', {recursive: true}, err => {});
+const NodeGeocoder = require('node-geocoder');
+const options = {
+    provider: 'google',
+    httpAdapter: 'tutoseMeInsert',
+    formatter: null
+};
 
 
 /* -------------------------------------------------- */
@@ -74,7 +82,7 @@ module.exports = async (Models) => {
         user.siret = rows[index][headers[columns.siret]];
 
 
-        // Recherche par Nom de fichier
+        // Recherche Image par Nom de fichier
         if (user.picture && user.picture != "") {
 
             // Construit le Nom de l'image de l'utilisateur
@@ -90,7 +98,7 @@ module.exports = async (Models) => {
             let src = path.join(pathFilePicture, user.picture);
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/formateur/' + filename);
+            let destDir = path.join(__dirname, dir + filename);
 
             fs.access(destDir, (err) => {
                 if (err) {
@@ -131,7 +139,7 @@ module.exports = async (Models) => {
             console.log("Erreur pas de photo-profile pour: ", user.first_name)
         }
 
-        // Recherche par Nom de fichier
+        // Recherche CV par Nom de fichier
         if (user.nomCv && user.nomCv != "") {
 
             // Construit le Nom du CV du formateur
@@ -143,7 +151,7 @@ module.exports = async (Models) => {
             let src = path.join(pathFileCV, saniTize(user.nomCv));
 
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/formateur/' + saniTize(filename));
+            let destDir = path.join(__dirname, dir + saniTize(filename));
             fs.access(destDir, (err) => {
                 if (err) {
                     console.log(err);
@@ -176,8 +184,23 @@ module.exports = async (Models) => {
             console.log("pas de cv disponible !");
         }
 
+        // Recherche Coordonnée par Addresse
+        if (user.address && user.address != "") {
+            var geocoder = NodeGeocoder(options);
+
+            geocoder.geocode(user.address)
+                .then(function (res) {
+                    console.log(res);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+
+        }
+
+
         // await user.save().then(_user => {
-        user.save().then(_user => {
+        await user.save().then(_user => {
 
             var trainer = new Models.Trainer();
 
@@ -211,7 +234,6 @@ module.exports = async (Models) => {
                 skills.name = user.matieres;
 
 
-
                 console.log('---------');
                 console.log(trainer.toJSON());
                 console.log('---------');
@@ -223,7 +245,7 @@ module.exports = async (Models) => {
                 //     skills.user_id = trainer.id,
                 //     skills.name = user.matieres
                 // );
-
+                process.exit();
                 return skills;
 
             });
@@ -235,7 +257,6 @@ module.exports = async (Models) => {
         console.log(user.toJSON());
         console.log('---------');
 
-        process.exit();
 
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
     }

@@ -96,8 +96,9 @@ module.exports = (sequelize, models) => {
             createdAt: 'chn_insert',
             updatedAt: 'chn_update',
             freezeTableName: true,
-            tableName: 'trainer'
+            tableName: 'trainers'
         });
 
+        models.Trainer.hasMany(models.Skills);
     }
 };

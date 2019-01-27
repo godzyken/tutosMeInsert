@@ -43,8 +43,6 @@ module.exports = (sequelize, models) => {
             tableName: 'skills'
         });
 
-        require("./Trainer")(sequelize,models);
-
-        models.Skills.hasMany(models.Trainer, {foreignKey: 'trainer_id', as: 'Trainers'});
+        models.Skills.hasOwnProperty(models.Trainer);
     }
 };

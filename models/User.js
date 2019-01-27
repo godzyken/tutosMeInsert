@@ -76,11 +76,9 @@ module.exports = (sequelize, models) => {
             createdAt: 'chn_insert',
             updatedAt: 'chn_update',
             freezeTableName: true,
-            tableName: 'user'
+            tableName: 'users'
         });
 
-        // require("./Trainer")(sequelize, models);
-        //
         models.User.belongsTo(models.Trainer);
     }
 };
