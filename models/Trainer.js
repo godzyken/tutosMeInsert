@@ -22,7 +22,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             resume: {
-                type: DataTypes.BLOB,
+                type: DataTypes.STRING,
                 allowNull: true
             },
             rib: {
@@ -92,14 +92,12 @@ module.exports = (sequelize, models) => {
         };
 
         models.Trainer = sequelize.define('Trainer', schema, {
-            timestamps: false,
-            createdAt: 'chn_insert',
-            updatedAt: 'chn_update',
+            timestamps: false ,
+            createdAt: DataTypes.DATE,
+            updatedAt: DataTypes.DATE,
             freezeTableName: true,
             tableName: 'trainer'
         });
-
-        models.Trainer.hasMany(models.Skills);
 
     }
 };

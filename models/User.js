@@ -46,7 +46,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             picture: {
-                type: DataTypes.BLOB,
+                type: DataTypes.STRING,
                 allowNull: true
             },
             type: {
@@ -73,13 +73,18 @@ module.exports = (sequelize, models) => {
 
         models.User = sequelize.define('User', schema, {
             timestamps: false,
-            createdAt: 'chn_insert',
-            updatedAt: 'chn_update',
+            createdAt: DataTypes.DATE,
+            updatedAt: DataTypes.DATE,
             freezeTableName: true,
             tableName: 'user'
         });
 
-        models.User.belongsTo(models.Trainer);
+        models.User.belongsTo(models.Trainer, {
+            as: 'Trainers',
+            through: models.Trainer,
+            foreignKey: 'userId',
+            tableName: 'trainer'
+        });
 
     }
 };

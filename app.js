@@ -14,7 +14,14 @@ const Models = {};
     await sequelize.authenticate();
 
     glob.sync("./models/*.js").forEach(file => {
+
         require(file)(sequelize, Models);
+    });
+
+    Object.keys(Models).forEach((modelName) => {
+        if (Models[modelName].associate){
+            Models[modelName].associate(Models);
+        }
     });
 
     let formateur = await require("./gold/index")(Models);

@@ -34,8 +34,8 @@ module.exports = (sequelize, models) => {
 
         models.Skills = sequelize.define('Skills', schema, {
             timestamps: false,
-            createdAt: 'chn_insert',
-            updatedAt: 'chn_update',
+            createdAt: DataTypes.DATE,
+            updatedAt: DataTypes.DATE,
             freezeTableName: true,
             tableName: 'skills'
         });

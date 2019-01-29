@@ -2,6 +2,7 @@ const XlsxExtractor = require('../utils/xlsxExtractor');
 const fs = require('fs');
 const path = require('path');
 const checksum = require('checksum');
+const mkdirp = require('mkdirp');
 
 
 /* -------------------------------------------------- */
@@ -15,6 +16,16 @@ const checksum = require('checksum');
 /* - -Copies les Cv de chaque profile utilisateur --- */
 /* - -Sauvegarde les données dans la Table: 'User'--- */
 /* -------------------------------------------------- */
+
+
+/* -------------------------------------------------- */
+const clientDirInt = '2019-01-11- Arborescence Dropbox/Interne/Clients/';
+/* -------------------------------------------------- */
+const photoSrc = 'BBD Bronze/BBD Bronze/Photos';
+/* -------------------------------------------------- */
+const preUrl = 'https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/client/';
+/* -------------------------------------------------- */
+const pathFileCV = 'BBD Bronze/BBD Bronze/CV';
 
 
 /*----- Initialise le tableau de champs de données ---*/
@@ -45,18 +56,54 @@ module.exports = async (Models) => {
     }
 
     // Creer le lien URL de la photo-profile
-    function createUrl(index, data) {
-        let urlbase = ('https://s3.eu-west-3.amazonaws.com/tutosmebackoffice/user/'); // TODO make it Global Variable
+    function createUrlPics(index, data) {
+        let urlbase = (preUrl);
         let pathPics = index + "_" + checksum(data);
         let ext = '.jpeg';
-        let Uri = path.join(urlbase, pathPics + ext);
+        return Uri = path.join(urlbase, pathPics + ext);
 
-        return Uri;
     }
 
-    // injitialise les srepertoires de recherche
-    let pathFilePicture = 'BBD Bronze/BBD Bronze/Photos';
-    let pathFileCV = 'BBD Bronze/BBD Bronze/CV';
+    // Creer le lien URL du cv
+    function createUrlCv(index, data) {
+        let urlbase = (preUrl);
+        let pathPics = index + "_" + checksum(data);
+        let ext = '.pdf';
+        return Uri = path.join(urlbase, pathPics + ext);
+    }
+
+    // Copie du cv dans le répertoire destinataire
+    function copyCV(src, dest) {
+
+        let readStream = fs.createReadStream(src);
+
+        readStream.once('error', (err) => {
+            console.log(err);
+        });
+
+        readStream.once('end', () => {
+            console.log('copy cv ok:');
+        });
+
+        readStream.pipe(fs.createWriteStream(dest));
+    }
+
+    // Copie l'image dans le répertoire destinataire
+    function copyPics(src, dest) {
+
+        let readStream = fs.createReadStream(src);
+
+        readStream.once('error', (err) => {
+            console.log(err);
+        });
+
+        readStream.once('end', () => {
+            console.log('copy image ok:');
+        });
+
+        readStream.pipe(fs.createWriteStream(dest));
+    }
+
 
     for (let index = 0; index < rows.length; index++) {
 
@@ -72,106 +119,58 @@ module.exports = async (Models) => {
         user.nomCv = rows[index][headers[columns.nomCv]];
         user.matieres = rows[index][headers[columns.matieres]];
 
+
         // Recherche par Nom de fichier
         if (user.picture && user.picture !== "") {
 
             // Construit le Nom de l'image Utilisateur
             let names = user.first_name + user.last_name;
-
             // formatage du nom utilisateur
             let filename = saniTize(names);
-
             // Construit l'url de la photo a sauvegarder
-            let url = createUrl(index, filename);
-
+            let url = createUrlPics(index, filename);
             // Parcours le répertoire source d'images
-            let src = path.join(pathFilePicture, user.picture);
-
+            let src = path.join(photoSrc, user.picture);
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/client/' + filename);
-
-            fs.access(destDir, (err) => {
+            let destDir = path.join(__dirname, clientDirInt + filename);
+            mkdirp(destDir, function (err) {
                 if (err)
-                    fs.mkdirSync(destDir);
-                copyFile(src, path.join(destDir, filename + '.png'));
+                    console.error(err);
+                else console.log('Répertoire image créé');
+                user.picture = copyPics(src, path.join(destDir, filename + '.png'));
             });
 
-            // Copie l'image dans le répertoire destinataire
-            function copyFile(src, dest) {
+            user.setAttributes(user.resume = url);
 
-                let readStream = fs.createReadStream(src);
-
-                readStream.once('error', (err) => {
-                    console.log(err);
-                });
-
-                readStream.once('end', () => {
-
-                    console.log('------go---------go---------go---------------');
-                    console.log('copy ok pour le client:' + filename);
-                    console.log("Src : ", src);
-                    console.log("Dest : ", dest);
-                    console.log("Url : ", url);
-                    console.log('------ok---------ok---------ok---------------');
-                });
-
-                readStream.pipe(fs.createWriteStream(dest));
-            }
-
-            user.picture = url;
-
-            return user.picture;
-
+            //return user.resume;
         }
         else {
-            console.log("Erreur pas de photo-profile pour: " + user.first_name)
+            console.log("Pas de photo-profile pour: " + user.first_name)
         }
 
 
         // Recherche par Nom de fichier
-        if (user.nomCv && user.nomCv != "") {
+        if (user.nomCv && user.nomCv !== "") {
 
             // Construit le Nom du CV de l'Utilisateur
             let names = user.first_name + user.last_name;
-
             let filename = saniTize(names);
+            let url = createUrlCv(index, filename);
 
             // Parcours le répertoire source de CV
             let src = path.join(pathFileCV, saniTize(user.nomCv));
-
             // Construit le nom du repertoire destinataire
-            let destDir = path.join(__dirname, '/client/' + saniTize(filename));
+            let destDir = path.join(__dirname, clientDirInt + saniTize(filename));
+            mkdirp(destDir, function (err) {
+                if (err)
+                    console.error(err);
+                else console.log('Répertoire cv créé');
+                user.nomCv = copyCV(src, path.join(destDir, filename + '.pdf'));
 
-            console.log('------------');
-            console.log(destDir);
-            console.log('------------');
-
-            fs.access(destDir, (err) => {
-                if (err) {
-                    console.log(err);
-                    fs.mkdirSync(destDir);
-                }
-                copyFile(src, path.join(destDir, filename + '.pdf'));
             });
 
+            user.setAttributes(user.resume = url);
 
-            // Copie le cv dans le répertoire destinataire
-            function copyFile(src, dest) {
-
-                let readStream = fs.createReadStream(src);
-
-                readStream.once('error', (err) => {
-                    console.log(err);
-                });
-
-                readStream.once('end', () => {
-                    console.log('copy ok pour: ' + filename);
-                    console.log("Src : ", src);
-                    console.log("Dest : ", dest)
-                });
-
-                readStream.pipe(fs.createWriteStream(dest));
-            }
         }
         else {
             console.log("pas de cv pour : ")
@@ -179,13 +178,14 @@ module.exports = async (Models) => {
 
 
         // sauvegarder chaque User dans la bdd
-        // await user.save();
+        await user.save();
 
-        await  user.save();
 
-        process.exit();
-
+        console.log('---------');
         console.log(user.toJSON());
+        console.log('---------');
+
+
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<[THE END]>>>>>>>>>>>>>>>>>>>>>>")
     }
 
