@@ -92,9 +92,9 @@ module.exports = (sequelize, models) => {
         };
 
         models.Trainer = sequelize.define('Trainer', schema, {
-            timestamps: false,
-            createdAt: 'chn_insert',
-            updatedAt: 'chn_update',
+            timestamps: false ,
+            createdAt: DataTypes.DATE,
+            updatedAt: DataTypes.DATE,
             freezeTableName: true,
             tableName: 'trainer'
         });

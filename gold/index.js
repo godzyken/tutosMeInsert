@@ -46,7 +46,7 @@ const columns = {
 module.exports = async (Models) => {
 
     // script d'extraction de données
-    const {headers, rows} = XlsxExtractor("./BBD gold/BBD gold/BBD Gold.xlsx");        // TODO make it Global Variable
+    const {headers, rows} = XlsxExtractor("./BDD GOLD/BBD Gold.xlsx");        // TODO make it Global Variable
 
     // Parse les données nom, prenom du fichier xlsx
     function saniTize(origin) {

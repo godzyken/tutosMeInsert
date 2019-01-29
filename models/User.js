@@ -73,8 +73,8 @@ module.exports = (sequelize, models) => {
 
         models.User = sequelize.define('User', schema, {
             timestamps: false,
-            createdAt: 'chn_insert',
-            updatedAt: 'chn_update',
+            createdAt: DataTypes.DATE,
+            updatedAt: DataTypes.DATE,
             freezeTableName: true,
             tableName: 'user'
         });
