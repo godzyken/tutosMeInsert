@@ -46,7 +46,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             picture: {
-                type: DataTypes.BLOB,
+                type: DataTypes.STRING,
                 allowNull: true
             },
             type: {
@@ -57,10 +57,10 @@ module.exports = (sequelize, models) => {
                 type: DataTypes.ENUM('waiting', 'active', 'deleted'),
                 allowNull: true
             },
-           /* lastlongin_at: {
-                type: DataTypes.DATE,
-                allowNull: true
-            },*/
+            lastlongin_at: {
+                 type: DataTypes.DATE,
+                 allowNull: true
+             },
             remember_token: {
                 type: DataTypes.TEXT,
                 allowNull: true
@@ -76,9 +76,15 @@ module.exports = (sequelize, models) => {
             createdAt: 'chn_insert',
             updatedAt: 'chn_update',
             freezeTableName: true,
-            tableName: 'users'
+            tableName: 'user'
         });
 
-        models.User.belongsTo(models.Trainer);
+        models.User.belongsTo(models.Trainer, {
+            as: 'Trainers',
+            through: models.Trainer,
+            foreignKey: 'userId',
+            tableName: 'trainer'
+        });
+
     }
 };

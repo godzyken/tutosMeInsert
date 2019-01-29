@@ -66,7 +66,7 @@ module.exports = async (Models) => {
         user.zip = rows[index][headers[columns.zip]];
         user.ville = rows[index][headers[columns.ville]];
         user.mobile_phone = rows[index][headers[columns.mobile_phone]];
-        user.picture = rows[index][headers[columns.picture] || ""];
+        user.picture = rows[index][headers[columns.picture]];
         user.nomCv = rows[index][headers[columns.nomCv]];
         user.matieres = rows[index][headers[columns.matieres]];
 

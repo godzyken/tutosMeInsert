@@ -22,7 +22,7 @@ module.exports = (sequelize, models) => {
                 allowNull: true
             },
             resume: {
-                type: DataTypes.TEXT,
+                type: DataTypes.STRING,
                 allowNull: true
             },
             rib: {
@@ -96,9 +96,8 @@ module.exports = (sequelize, models) => {
             createdAt: 'chn_insert',
             updatedAt: 'chn_update',
             freezeTableName: true,
-            tableName: 'trainers'
+            tableName: 'trainer'
         });
 
-        models.Trainer.hasMany(models.Skills);
     }
 };
