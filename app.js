@@ -3,8 +3,8 @@ const glob = require("glob");
 const fs = require("fs-extra");
 
 
-const sequelize = new Sequelize('tutosme.dev', 'tutosme.dev', 'HNmB1g1KWEODsI2u', {
-    host: 'appsvelocity.cabutdpbsmsc.eu-west-3.rds.amazonaws.com',
+const sequelize = new Sequelize('tutosme.dev', 'tutosme.dev', '############', {
+    host: 'appsvelocity.##########.eu-west-3.rds.amazonaws.com',
     dialect: 'mysql'
 });
 
