@@ -36,7 +36,7 @@
     "node-xlsx": "^0.12.1",
     "officegen": "^0.4.7",
     "request": "2.88.0",
-    "sequelize": "4.42.0",
+    "sequelize": "5.15.1",
     "string": "3.3.3",
     "underscore": "1.9.1",
     "xlsx": "^0.14.1",
