@@ -38,7 +38,7 @@
     "request": "2.88.0",
     "sequelize": "4.42.0",
     "string": "3.3.3",
-    "underscore": "1.9.1",
+    "underscore": "1.12.1",
     "xlsx": "^0.14.1",
     "xmlbuilder": "^10.1.1"
   }
