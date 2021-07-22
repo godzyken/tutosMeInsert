@@ -39,7 +39,7 @@
     "sequelize": "4.42.0",
     "string": "3.3.3",
     "underscore": "1.9.1",
-    "xlsx": "^0.14.1",
+    "xlsx": "^0.17.0",
     "xmlbuilder": "^10.1.1"
   }
 }
